@@ -4,16 +4,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../style/main.less';
 
-const Canvas = ({ width, height }) => (
-  <>
-    <canvas
-      id="roomCanvas"
-      width={width}
-      height={height}
-      className={styles.room}
-    />
-  </>
-);
+const Canvas = ({ width, height, handleClick }) => {
+  const canvasRef = React.useRef(null);
+  return (
+    <>
+      <canvas
+        ref={canvasRef}
+        id="roomCanvas"
+        width={width}
+        height={height}
+        className={styles.room}
+        onClick={(e) => handleClick(e, canvasRef)}
+      />
+    </>
+  );
+};
 
 export default Canvas;
 
