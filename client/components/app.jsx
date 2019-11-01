@@ -10,25 +10,6 @@ export default class App extends Component {
       height: 800,
       width: 800,
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.draw = this.draw.bind(this);
-  }
-
-  getCanvasContext(canvasRef) {
-    const context = canvasRef.getContext('2d');
-    this.draw();
-  }
-
-  handleClick(e, ref) {
-    const { current } = ref;
-    const { id } = current;
-    id === 'roomCanvas'
-      ? this.getCanvasContext(current)
-      : console.log('not a canvas');
-  }
-
-  draw() {
-    console.log('drawin here');
   }
 
   render() {
@@ -39,11 +20,7 @@ export default class App extends Component {
           <h1>HERE WE GO BABY</h1>
         </header>
         <div>
-          <Canvas
-            height={height}
-            width={width}
-            handleClick={this.handleClick}
-          />
+          <Canvas height={height} width={width} />
         </div>
         <footer>
           <h2>layabout a while, won't you?</h2>
