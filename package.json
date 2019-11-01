@@ -1,0 +1,49 @@
+{
+  "name": "layabout",
+  "version": "1.0.0",
+  "description": "rearrange furniture in a room of your design",
+  "main": "index.jsx",
+  "scripts": {
+    "start": "node ./server/index.js",
+    "dev-start": "nodemon server/index.js",
+    "build": "webpack --mode production --watch",
+    "dev-build": "webpack -d --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MitchellDill/layabout.git"
+  },
+  "author": "mitchell dill",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MitchellDill/layabout/issues"
+  },
+  "homepage": "https://github.com/MitchellDill/layabout#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.2.0",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "nodemon": "^1.19.4",
+    "prettier": "^1.18.2",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}
