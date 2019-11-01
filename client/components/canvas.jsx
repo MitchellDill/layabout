@@ -10,7 +10,9 @@ const Canvas = ({ width, height }) => {
 
   function draw(context, latestCoordinates) {
     // coordinates should have an x and a y
-    console.log(latestCoordinates);
+    const { x, y } = latestCoordinates;
+    context.fillRect(x, y, 5, 5);
+    // console.log(latestCoordinates);
   }
 
   useEffect(() => {
@@ -25,8 +27,8 @@ const Canvas = ({ width, height }) => {
   });
 
   function handleClick(e) {
-    const clickCoordinates = { x: e.clientX, y: e.clientY };
     addCoordinates([...coordinates, clickCoordinates]);
+    const clickCoordinates = { x: e.clientX, y: e.clientY };
   }
 
   return (
@@ -37,8 +39,9 @@ const Canvas = ({ width, height }) => {
         width={width}
         height={height}
         className={styles.room}
-        onClick={(e) => {
-          handleClick(e);
+        onMouseMove={(e) => {
+          //   console.log(e.buttons, e.pageX, e.pageY, e.screenX, e.screenY);
+          e.buttons === 1 ? handleClick(e) : null;
         }}
       />
     </>
