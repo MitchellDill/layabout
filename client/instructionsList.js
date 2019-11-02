@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+
 const instructionsList = [
   'Draw your room!',
   'Select your furniture!',
@@ -5,4 +7,3 @@ const instructionsList = [
 ];
 
 export default instructionsList;
-

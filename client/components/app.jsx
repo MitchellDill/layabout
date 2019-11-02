@@ -7,6 +7,7 @@ import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
 import defaultFurnitureList from '../defaultFurnitureList.js';
 import instructionsList from '../instructionsList.js';
+import CreateFurniture from './createFurniture.jsx';
 
 export default class App extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class App extends Component {
       furnitureTypes: [],
       furnitureInstances: [],
       selectedFurniture: '',
+      furnitureCreateMode: false,
     };
     this.handleClick = this.handleClick.bind(this);
     this.cycleInstructions = this.cycleInstructions.bind(this);
@@ -36,8 +38,10 @@ export default class App extends Component {
 
   selectFurniture(name) {
     this.state.furnitureTypes.includes(name)
-      ? this.setState({ selectedFurniture: name })
-      : null;
+      ? this.setState({ selectedFurniture: name, furnitureCreateMode: false })
+      : name === 'Draw custom furniture'
+        ? this.setState({ selectedFurniture: '', furnitureCreateMode: true })
+        : null;
   }
 
   cycleInstructions() {
@@ -45,6 +49,7 @@ export default class App extends Component {
   }
 
   handleClick(e) {
+    console.log(e.target.innerHTML);
     this.selectFurniture(e.target.innerHTML);
   }
 
@@ -57,6 +62,7 @@ export default class App extends Component {
       furnitureTypes,
       furnitureInstances,
       selectedFurniture,
+      furnitureCreateMode,
     } = this.state;
     return (
       <>
@@ -71,6 +77,7 @@ export default class App extends Component {
             selectedFurniture={selectedFurniture}
             handleClick={this.handleClick}
           />
+          <CreateFurniture handleClick={this.handleClick} selected={furnitureCreateMode} />
         </aside>
         <footer>
           <h2>layabout a while, won't you?</h2>
