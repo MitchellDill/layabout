@@ -9,10 +9,28 @@ const Canvas = ({
   width, height, cycleInstructions, isCreateButtonOn,
 }) => {
   const canvasRef = React.useRef(null);
+  const offset = { x: 100, y: 100 };
+
+  // hooks below
   const [coordinates, addCoordinates] = useState([]);
   const [freehandDrawings, addFreehandDrawing] = useState([]);
   const [roomExists, makeRoomExist] = useState(false);
-  const offset = { x: 100, y: 100 };
+  const [roomCoordinates, createRoom] = useState(null);
+
+
+  function declareRoomCoordinates() {
+    const roomCorners = [...coordinates];
+    const topLeft = [...roomCorners].sort((a, b) => (a.y < b.y ? -1 : a.y > b.y ? 1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? -1 : 1))[0];
+    const topRight = [...roomCorners].sort((a, b) => (a.y < b.y ? -1 : a.y > b.y ? 1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? 1 : -1))[0];
+    const bottomLeft = [...roomCorners].sort((a, b) => (a.y < b.y ? 1 : a.y > b.y ? -1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? -1 : 1))[0];
+    const bottomRight = [...roomCorners].sort((a, b) => (a.y < b.y ? 1 : a.y > b.y ? -1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? 1 : -1))[0];
+    createRoom({
+      topLeft,
+      topRight,
+      bottomLeft,
+      bottomRight,
+    });
+  }
 
   function connectPonts(context) {
     context.beginPath();
@@ -23,7 +41,10 @@ const Canvas = ({
     });
     context.closePath();
     context.stroke();
+
+    // move forward in flow of app
     makeRoomExist(true);
+    declareRoomCoordinates();
     cycleInstructions();
   }
 
@@ -82,7 +103,7 @@ const Canvas = ({
           handleClick(e);
         }}
         onMouseMove={(e) => {
-          console.log(e.buttons);
+          console.log(roomCoordinates);
           e.buttons === 1 && roomExists && isCreateButtonOn
             ? handleDrag(e)
             : isCreateButtonOn && !roomExists

@@ -4,8 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Furniture from './furniture.jsx';
 
-const FurnitureList = ({ furnitureTypes, selectedFurniture, handleClick }) => (
-  furnitureTypes.map((furniture, i) => (
+const FurnitureList = ({ furnitureTypes, selectedFurniture, handleClick }) => furnitureTypes.map((furniture, i) => (
     <Furniture
       name={furniture}
       count={0}
@@ -13,8 +12,7 @@ const FurnitureList = ({ furnitureTypes, selectedFurniture, handleClick }) => (
       selected={furniture === selectedFurniture}
       handleClick={handleClick}
     />
-  ))
-);
+  ));
 
 export default FurnitureList;
 
