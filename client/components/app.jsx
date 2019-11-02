@@ -7,8 +7,8 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 800,
-      width: 800,
+      height: 600,
+      width: 600,
     };
   }
 
@@ -17,7 +17,7 @@ export default class App extends Component {
     return (
       <>
         <header>
-          <h1>HERE WE GO BABY</h1>
+          <h1>LAYABOUT MESSAGE</h1>
         </header>
         <div>
           <Canvas height={height} width={width} />
