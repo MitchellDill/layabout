@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import { Paper } from '@material-ui/core';
 import styles from '../style/main.less';
 
-const Canvas = ({ width, height, cycleInstructions }) => {
+const Canvas = ({
+  width, height, cycleInstructions, isCreateButtonOn,
+}) => {
   const canvasRef = React.useRef(null);
   const [coordinates, addCoordinates] = useState([]);
   const [freehandDrawings, addFreehandDrawing] = useState([]);
@@ -81,7 +83,11 @@ const Canvas = ({ width, height, cycleInstructions }) => {
         }}
         onMouseMove={(e) => {
           console.log(e.buttons);
-          e.buttons === 1 && roomExists ? handleDrag(e) : null;
+          e.buttons === 1 && roomExists && isCreateButtonOn
+            ? handleDrag(e)
+            : isCreateButtonOn && !roomExists
+              ? cycleInstructions(404)
+              : null;
         }}
       />
     </Paper>
@@ -94,6 +100,7 @@ Canvas.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   cycleInstructions: PropTypes.func.isRequired,
+  isCreateButtonOn: PropTypes.bool.isRequired,
 };
 
 Canvas.defaultProps = {

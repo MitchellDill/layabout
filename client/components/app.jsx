@@ -21,6 +21,7 @@ export default class App extends Component {
       furnitureInstances: [],
       selectedFurniture: '',
       furnitureCreateMode: false,
+      isErrorShown: false,
     };
     this.handleClick = this.handleClick.bind(this);
     this.cycleInstructions = this.cycleInstructions.bind(this);
@@ -37,15 +38,28 @@ export default class App extends Component {
   }
 
   selectFurniture(name) {
-    this.state.furnitureTypes.includes(name)
-      ? this.setState({ selectedFurniture: name, furnitureCreateMode: false })
-      : name === 'Draw custom furniture'
-        ? this.setState({ selectedFurniture: '', furnitureCreateMode: true })
-        : null;
+    if (this.state.furnitureTypes.includes(name)) {
+      this.setState((prevState, nextState) => {
+        if (prevState.furnitureCreateMode) {
+          this.cycleInstructions(-1);
+        }
+        return {
+          selectedFurniture: name,
+          furnitureCreateMode: false,
+        };
+      });
+    } else if (name === 'Draw custom furniture') {
+      this.setState({ selectedFurniture: '', furnitureCreateMode: true });
+      this.cycleInstructions();
+    }
   }
 
-  cycleInstructions() {
-    this.setState((prevState, nextState) => ({ instructionIndex: prevState.instructionIndex + 1 }));
+  cycleInstructions(code = 1) {
+    if (code === 404) {
+      this.setState({ isErrorShown: true });
+    } else {
+      this.setState((prevState, nextState) => ({ instructionIndex: prevState.instructionIndex + code, isErrorShown: false }));
+    }
   }
 
   handleClick(e) {
@@ -63,12 +77,13 @@ export default class App extends Component {
       furnitureInstances,
       selectedFurniture,
       furnitureCreateMode,
+      isErrorShown,
     } = this.state;
     return (
       <>
-        <Instruction message={instructions[instructionIndex]} />
+        <Instruction message={instructions[instructionIndex]} isErrorShown={isErrorShown} />
         <div>
-          <Canvas height={height} width={width} cycleInstructions={this.cycleInstructions} />
+          <Canvas height={height} width={width} cycleInstructions={this.cycleInstructions} isCreateButtonOn={furnitureCreateMode} />
         </div>
         <aside>
           <FurnitureList
@@ -77,7 +92,7 @@ export default class App extends Component {
             selectedFurniture={selectedFurniture}
             handleClick={this.handleClick}
           />
-          <CreateFurniture handleClick={this.handleClick} selected={furnitureCreateMode} />
+          <CreateFurniture handleClick={this.handleClick} selected={furnitureCreateMode} cycleInstructions={this.cycleInstructions} />
         </aside>
         <footer>
           <h2>layabout a while, won't you?</h2>

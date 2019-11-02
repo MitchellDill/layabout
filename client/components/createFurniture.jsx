@@ -21,4 +21,5 @@ export default CreateFurniture;
 CreateFurniture.propTypes = {
   handleClick: PropTypes.func.isRequired,
   selected: PropTypes.bool.isRequired,
+//   cycleInstructions: PropTypes.func.isRequired,
 };
