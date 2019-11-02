@@ -42,7 +42,7 @@ const Canvas = ({
     context.closePath();
     context.stroke();
 
-    // move forward in flow of app
+    // move forward in stage of app usage
     makeRoomExist(true);
     declareRoomCoordinates();
     cycleInstructions();
@@ -81,7 +81,7 @@ const Canvas = ({
     const { current } = canvasRef;
     const context = current.getContext('2d');
     if (coordinates.length > 0 && !roomExists) {
-      context.lineWidth = 10;
+      context.lineWidth = 7;
       context.fillStyle = '#553739';
       const [newCoordinates] = coordinates.slice(-1);
       drawPoint(context, newCoordinates);
@@ -103,12 +103,11 @@ const Canvas = ({
           handleClick(e);
         }}
         onMouseMove={(e) => {
-          console.log(roomCoordinates);
-          e.buttons === 1 && roomExists && isCreateButtonOn
-            ? handleDrag(e)
-            : isCreateButtonOn && !roomExists
-              ? cycleInstructions(404)
-              : null;
+          if (e.buttons === 1 && roomExists && isCreateButtonOn) {
+            handleDrag(e);
+          } else if (isCreateButtonOn && !roomExists) {
+            cycleInstructions(404);
+          }
         }}
       />
     </Paper>
