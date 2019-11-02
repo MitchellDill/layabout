@@ -8,6 +8,8 @@ import styles from '../style/main.less';
 const Canvas = ({ width, height }) => {
   const canvasRef = React.useRef(null);
   const [coordinates, addCoordinates] = useState([]);
+  const [freehandDrawings, addFreehandDrawing] = useState([]);
+  const [roomExists, makeRoomExist] = useState(false);
   const offset = { x: 100, y: 100 };
 
   function connectPonts(context) {
@@ -19,15 +21,20 @@ const Canvas = ({ width, height }) => {
     });
     context.closePath();
     context.stroke();
+    makeRoomExist(true);
   }
 
   function drawPoint(context, latestCoordinates) {
     const { x, y } = latestCoordinates;
-    context.fillRect(x, y, 2, 2);
+    context.fillRect(x, y, 4, 4);
     if (coordinates.length === 4) {
       connectPonts(context);
     }
-    // console.log(latestCoordinates);
+  }
+
+  function drawFreehand(context, latestCoordinates) {
+    const { x, y } = latestCoordinates;
+    context.fillRect(x, y, 2, 2);
   }
 
   function handleClick(e) {
@@ -38,13 +45,27 @@ const Canvas = ({ width, height }) => {
     addCoordinates([...coordinates, clickCoordinates]);
   }
 
+  function handleDrag(e) {
+    const dragCoordinates = {
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y,
+    };
+    addFreehandDrawing([...freehandDrawings, dragCoordinates]);
+  }
+
   useEffect(() => {
     const { current } = canvasRef;
     const context = current.getContext('2d');
-    context.fillStyle = '#553739';
-    if (coordinates.length > 0) {
+    if (coordinates.length > 0 && !roomExists) {
+      context.lineWidth = 10;
+      context.fillStyle = '#553739';
       const [newCoordinates] = coordinates.slice(-1);
       drawPoint(context, newCoordinates);
+    } else if (freehandDrawings.length > 0 && roomExists) {
+      context.lineWidth = 2;
+      context.fillStyle = '#b38d97';
+      const [newDrawing] = freehandDrawings.slice(-1);
+      drawFreehand(context, newDrawing);
     }
   });
 
@@ -56,6 +77,10 @@ const Canvas = ({ width, height }) => {
         height={height}
         onClick={(e) => {
           handleClick(e);
+        }}
+        onMouseMove={(e) => {
+          console.log(e.buttons);
+          e.buttons === 1 && roomExists ? handleDrag(e) : null;
         }}
       />
     </Paper>
