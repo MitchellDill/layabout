@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/MitchellDill/layabout#readme",
   "dependencies": {
+    "@material-ui/core": "^4.5.2",
     "express": "^4.17.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0"

@@ -17,14 +17,14 @@ export default class App extends Component {
     return (
       <>
         <header>
-          <h1>HERE WE GO BABY</h1>
+          <h1>LAYABOUT MESSAGE</h1>
         </header>
         <div>
           <Canvas height={height} width={width} />
         </div>
-        {/* <footer>
+        <footer>
           <h2>layabout a while, won't you?</h2>
-        </footer> */}
+        </footer>
       </>
     );
   }
