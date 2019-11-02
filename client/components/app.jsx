@@ -23,7 +23,7 @@ export default class App extends Component {
 
   getFurnitureList() {
     this.setState({
-      furnitureInstances: defaultFurnitureList,
+      furnitureTypes: defaultFurnitureList,
     });
   }
 

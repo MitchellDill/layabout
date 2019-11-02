@@ -3,10 +3,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Typography } from '@material-ui/core';
+import style from '../style/main.less';
 
 const Furniture = ({ name, count }) => (
-  <Card>
-    <Typography variant="p">{name}</Typography>
+  <Card className={style.furnitureCard}>
+    <Typography variant="h3">{name}</Typography>
   </Card>
 );
 

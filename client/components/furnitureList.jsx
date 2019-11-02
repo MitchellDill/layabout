@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Furniture from './furniture.jsx';
 
 const FurnitureList = ({ furnitureTypes }) => furnitureTypes.map((furniture, i) => (
-    <Furniture key={`savedFurnitureIndex00${i}`} />
+    <Furniture name={furniture} key={`savedFurnitureIndex00${i}`} />
   ));
 
 export default FurnitureList;
