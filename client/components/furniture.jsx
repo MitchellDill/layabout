@@ -5,18 +5,26 @@ import PropTypes from 'prop-types';
 import { Card, Typography } from '@material-ui/core';
 import style from '../style/main.less';
 
-const Furniture = ({ name, count }) => (
-  <Card className={style.furnitureCard}>
-    <Typography variant="h3">{name}</Typography>
-  </Card>
-);
+const Furniture = ({
+  name, count, handleClick, selected,
+}) => {
+  const cardStyle = selected ? 'selectedFurnitureCard' : 'furnitureCard';
+  return (
+    <Card className={style[cardStyle]} onClick={(e) => { handleClick(e); }}>
+      <Typography variant="h3">{`${name}`}</Typography>
+    </Card>
+  );
+};
 
 export default Furniture;
 
 Furniture.propTypes = {
-  furnitureTypes: PropTypes.array,
+  name: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  selected: PropTypes.bool,
 };
 
 Furniture.defaultProps = {
-  furnitureTypes: [],
+  selected: false,
 };

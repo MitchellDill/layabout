@@ -14,7 +14,9 @@ export default class App extends Component {
       width: 600,
       furnitureTypes: [],
       furnitureInstances: [],
+      selectedFurniture: '',
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -27,9 +29,25 @@ export default class App extends Component {
     });
   }
 
+  selectFurniture(name) {
+    this.state.furnitureTypes.includes(name)
+      ? this.setState({ selectedFurniture: name })
+      : null;
+  }
+
+  handleClick(e) {
+    this.selectFurniture(e.target.innerHTML);
+  }
+
   render() {
     // eslint-disable-next-line object-curly-newline
-    const { height, width, furnitureTypes, furnitureInstances } = this.state;
+    const {
+      height,
+      width,
+      furnitureTypes,
+      furnitureInstances,
+      selectedFurniture,
+    } = this.state;
     return (
       <>
         <header>
@@ -42,6 +60,8 @@ export default class App extends Component {
           <FurnitureList
             furnitureTypes={furnitureTypes}
             furnitureInstances={furnitureInstances}
+            selectedFurniture={selectedFurniture}
+            handleClick={this.handleClick}
           />
         </aside>
         <footer>
