@@ -94,6 +94,7 @@ export default class App extends Component {
             width={width}
             cycleInstructions={this.cycleInstructions}
             isCreateButtonOn={furnitureCreateMode}
+            selectedFurniture={selectedFurniture}
           />
         </div>
         <aside>

@@ -8,7 +8,7 @@ import styles from '../style/main.less';
 import isPointInPolygon from '../model/mathHelpers.js';
 
 const Canvas = ({
-  width, height, cycleInstructions, isCreateButtonOn,
+  width, height, cycleInstructions, isCreateButtonOn, selectedFurniture,
 }) => {
   const canvasRef = React.useRef(null);
   const offset = { x: 100, y: 100 };
@@ -17,6 +17,7 @@ const Canvas = ({
   const [coordinates, addCoordinates] = useState([]);
   const [freehandDrawings, addFreehandDrawing] = useState([]);
   const [roomExists, makeRoomExist] = useState(false);
+  const [furnitureArray, addFurniture] = useState([]);
 
   function connectPonts(context) {
     context.beginPath();
@@ -46,6 +47,10 @@ const Canvas = ({
     context.fillRect(x, y, 2, 2);
   }
 
+  function placeFurniture(context, furnitureType) {
+    console.log(furnitureType);
+  }
+
   function handleClick(e) {
     const clickCoordinates = {
       x: e.clientX - offset.x,
@@ -73,11 +78,13 @@ const Canvas = ({
       context.fillStyle = '#553739';
       const [newCoordinates] = coordinates.slice(-1);
       drawPoint(context, newCoordinates);
-    } else if (freehandDrawings.length > 0 && roomExists) {
+    } else if (freehandDrawings.length > 0 && roomExists && isCreateButtonOn) {
       context.lineWidth = 2;
       context.fillStyle = '#b38d97';
       const [newDrawing] = freehandDrawings.slice(-1);
       drawFreehand(context, newDrawing);
+    } else if (selectedFurniture !== '' && roomExists) {
+      placeFurniture(context, selectedFurniture);
     }
   });
 
@@ -109,9 +116,11 @@ Canvas.propTypes = {
   height: PropTypes.number,
   cycleInstructions: PropTypes.func.isRequired,
   isCreateButtonOn: PropTypes.bool.isRequired,
+  selectedFurniture: PropTypes.string,
 };
 
 Canvas.defaultProps = {
   width: 600,
   height: 600,
+  selectedFurniture: '',
 };
