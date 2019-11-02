@@ -4,7 +4,9 @@
 import React, { Component } from 'react';
 import Canvas from './canvas.jsx';
 import FurnitureList from './furnitureList.jsx';
+import Instruction from './instruction.jsx';
 import defaultFurnitureList from '../defaultFurnitureList.js';
+import instructionsList from '../instructionsList.js';
 
 export default class App extends Component {
   constructor(props) {
@@ -12,6 +14,7 @@ export default class App extends Component {
     this.state = {
       height: 600,
       width: 600,
+      message: instructionsList[0],
       furnitureTypes: [],
       furnitureInstances: [],
       selectedFurniture: '',
@@ -40,19 +43,17 @@ export default class App extends Component {
   }
 
   render() {
-    // eslint-disable-next-line object-curly-newline
     const {
       height,
       width,
+      message,
       furnitureTypes,
       furnitureInstances,
       selectedFurniture,
     } = this.state;
     return (
       <>
-        <header>
-          <h1>LAYABOUT MESSAGE</h1>
-        </header>
+        <Instruction message={message} />
         <div>
           <Canvas height={height} width={width} />
         </div>
