@@ -1,9 +1,11 @@
+/* eslint-disable import/extensions */
 /* eslint-disable linebreak-style */
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Paper } from '@material-ui/core';
 import styles from '../style/main.less';
+import isPointInPolygon from '../model/mathHelpers.js';
 
 const Canvas = ({
   width, height, cycleInstructions, isCreateButtonOn,
@@ -15,22 +17,6 @@ const Canvas = ({
   const [coordinates, addCoordinates] = useState([]);
   const [freehandDrawings, addFreehandDrawing] = useState([]);
   const [roomExists, makeRoomExist] = useState(false);
-  const [roomCoordinates, createRoom] = useState(null);
-
-
-  function declareRoomCoordinates() {
-    const roomCorners = [...coordinates];
-    const topLeft = [...roomCorners].sort((a, b) => (a.y < b.y ? -1 : a.y > b.y ? 1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? -1 : 1))[0];
-    const topRight = [...roomCorners].sort((a, b) => (a.y < b.y ? -1 : a.y > b.y ? 1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? 1 : -1))[0];
-    const bottomLeft = [...roomCorners].sort((a, b) => (a.y < b.y ? 1 : a.y > b.y ? -1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? -1 : 1))[0];
-    const bottomRight = [...roomCorners].sort((a, b) => (a.y < b.y ? 1 : a.y > b.y ? -1 : 0)).slice(0, 2).sort((a, b) => (a.x < b.x ? 1 : -1))[0];
-    createRoom({
-      topLeft,
-      topRight,
-      bottomLeft,
-      bottomRight,
-    });
-  }
 
   function connectPonts(context) {
     context.beginPath();
@@ -42,9 +28,8 @@ const Canvas = ({
     context.closePath();
     context.stroke();
 
-    // move forward in stage of app usage
+    // move forward in stage of app usage, based around using this only for a room
     makeRoomExist(true);
-    declareRoomCoordinates();
     cycleInstructions();
   }
 
@@ -74,7 +59,10 @@ const Canvas = ({
       x: e.clientX - offset.x,
       y: e.clientY - offset.y,
     };
-    addFreehandDrawing([...freehandDrawings, dragCoordinates]);
+    const roomBoundaries = Object.values(coordinates);
+    if (isPointInPolygon(dragCoordinates, roomBoundaries)) {
+      addFreehandDrawing([...freehandDrawings, dragCoordinates]);
+    }
   }
 
   useEffect(() => {
