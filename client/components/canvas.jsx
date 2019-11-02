@@ -7,41 +7,41 @@ import styles from '../style/main.less';
 const Canvas = ({ width, height }) => {
   const canvasRef = React.useRef(null);
   const [coordinates, addCoordinates] = useState([]);
+  const offset = { x: 100, y: 100 };
 
-  function draw(context, latestCoordinates) {
-    // coordinates should have an x and a y
+  function drawPoint(context, latestCoordinates) {
     const { x, y } = latestCoordinates;
-    context.fillRect(x, y, 5, 5);
+    context.fillRect(x, y, 4, 4);
     // console.log(latestCoordinates);
   }
 
   useEffect(() => {
     const { current } = canvasRef;
     const context = current.getContext('2d');
-    // context.clearRect(0, 0, window.innerHeight, window.innerWidth);
-    // coordinates.forEach((xy) => draw(context, xy));
+    context.fillStyle = '#553739';
     if (coordinates.length > 0) {
       const [newCoordinates] = coordinates.slice(-1);
-      draw(context, newCoordinates);
+      drawPoint(context, newCoordinates);
     }
   });
 
   function handleClick(e) {
+    const clickCoordinates = {
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y,
+    };
     addCoordinates([...coordinates, clickCoordinates]);
-    const clickCoordinates = { x: e.clientX, y: e.clientY };
   }
 
   return (
     <>
       <canvas
         ref={canvasRef}
-        id="roomCanvas"
         width={width}
         height={height}
         className={styles.room}
-        onMouseMove={(e) => {
-          //   console.log(e.buttons, e.pageX, e.pageY, e.screenX, e.screenY);
-          e.buttons === 1 ? handleClick(e) : null;
+        onClick={(e) => {
+          handleClick(e);
         }}
       />
     </>
@@ -56,6 +56,6 @@ Canvas.propTypes = {
 };
 
 Canvas.defaultProps = {
-  width: 800,
-  height: 800,
+  width: 600,
+  height: 600,
 };

@@ -7,8 +7,8 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 800,
-      width: 800,
+      height: 600,
+      width: 600,
     };
   }
 
@@ -22,9 +22,9 @@ export default class App extends Component {
         <div>
           <Canvas height={height} width={width} />
         </div>
-        <footer>
+        {/* <footer>
           <h2>layabout a while, won't you?</h2>
-        </footer>
+        </footer> */}
       </>
     );
   }
