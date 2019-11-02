@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Paper } from '@material-ui/core';
 import styles from '../style/main.less';
 
-const Canvas = ({ width, height }) => {
+const Canvas = ({ width, height, cycleInstructions }) => {
   const canvasRef = React.useRef(null);
   const [coordinates, addCoordinates] = useState([]);
   const [freehandDrawings, addFreehandDrawing] = useState([]);
@@ -22,6 +22,7 @@ const Canvas = ({ width, height }) => {
     context.closePath();
     context.stroke();
     makeRoomExist(true);
+    cycleInstructions();
   }
 
   function drawPoint(context, latestCoordinates) {
@@ -92,6 +93,7 @@ export default Canvas;
 Canvas.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
+  cycleInstructions: PropTypes.func.isRequired,
 };
 
 Canvas.defaultProps = {

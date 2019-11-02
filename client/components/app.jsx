@@ -14,12 +14,14 @@ export default class App extends Component {
     this.state = {
       height: 600,
       width: 600,
-      message: instructionsList[0],
+      instructions: instructionsList,
+      instructionIndex: 0,
       furnitureTypes: [],
       furnitureInstances: [],
       selectedFurniture: '',
     };
     this.handleClick = this.handleClick.bind(this);
+    this.cycleInstructions = this.cycleInstructions.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +40,10 @@ export default class App extends Component {
       : null;
   }
 
+  cycleInstructions() {
+    this.setState((prevState, nextState) => ({ instructionIndex: prevState.instructionIndex + 1 }));
+  }
+
   handleClick(e) {
     this.selectFurniture(e.target.innerHTML);
   }
@@ -46,16 +52,17 @@ export default class App extends Component {
     const {
       height,
       width,
-      message,
+      instructions,
+      instructionIndex,
       furnitureTypes,
       furnitureInstances,
       selectedFurniture,
     } = this.state;
     return (
       <>
-        <Instruction message={message} />
+        <Instruction message={instructions[instructionIndex]} />
         <div>
-          <Canvas height={height} width={width} />
+          <Canvas height={height} width={width} cycleInstructions={this.cycleInstructions} />
         </div>
         <aside>
           <FurnitureList
