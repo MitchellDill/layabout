@@ -21,11 +21,7 @@ export default class KonvaCanvas extends Component {
       offsetY: 100,
       roomCorners: [],
       roomExists: false,
-      furnitureList: [],
       furniturePlaced: [],
-      selectedFurniture: this.props.selectedFurniture,
-      placeX: 0,
-      placeY: 0,
       isDragging: false,
     };
   }
@@ -40,8 +36,8 @@ export default class KonvaCanvas extends Component {
   }
 
   drawCoordinates(coordinates) {
-    const { roomCorners, roomExists, selectedFurniture } = this.state;
-    const { cycleInstructions } = this.props;
+    const { roomCorners, roomExists } = this.state;
+    const { cycleInstructions, selectedFurniture } = this.props;
 
     if (roomCorners.length < 4 && !roomExists) {
       this.setState((prevState) => {
@@ -52,7 +48,7 @@ export default class KonvaCanvas extends Component {
         }
         return newState;
       });
-    } else if (roomExists) {
+    } else if (roomExists && selectedFurniture !== '') {
       console.log(selectedFurniture);
       const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
       this.setState((prevState) => ({ furniturePlaced: [...prevState.furniturePlaced, newFurniture] }));
@@ -94,5 +90,5 @@ KonvaCanvas.propTypes = {
 };
 
 KonvaCanvas.defaultProps = {
-
+  selectedFurniture: '',
 };

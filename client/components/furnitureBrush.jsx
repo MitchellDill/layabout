@@ -9,14 +9,16 @@ import PropTypes from 'prop-types';
 import furnitureList from '../model/furnitureDrawings';
 
 const FurnitureBrush = ({ type, x, y }) => {
-  const furnitureInstructions = furnitureList[0].createPoints(x, y);
+  const [selectedFurniture] = furnitureList.filter((furniture) => furniture.type === type);
+  const furnitureStyle = selectedFurniture.getStyle();
+  const furnitureInstructions = selectedFurniture.createPoints(x, y);
   return (
     <Line
       points={[...furnitureInstructions]}
       closed
-      fill="brown"
-      stroke="black"
-      strokeWidth={2}
+      fill={furnitureStyle.fill}
+      stroke={furnitureStyle.stroke}
+      strokeWidth={furnitureStyle.strokeWidth}
       draggable
     />
   );
