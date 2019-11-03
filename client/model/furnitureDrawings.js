@@ -39,7 +39,6 @@ class Furniture {
     xCoordinates.push(0);
     yCoordinates.push(0);
 
-    console.log('part 1:', xCoordinates, yCoordinates);
     // add each array to its i + 1 counterpart
     const firstSum = [...xCoordinates].reduce((prev, current, i, arr) => {
       if (i !== arr.length - 1) {
@@ -55,18 +54,15 @@ class Furniture {
       return prev;
     });
 
-    console.log('part 2:', firstSum, secondSum);
-    // now subtract the second from the first, and halve it
-
     return (firstSum - secondSum) / 2;
   }
 }
 
-const square = new Furniture('Chair', [25, 0, 25, 25, 0, 25], 'brown');
-const rectangle = new Furniture('Table', [25, 0, 25, 75, 0, 75], 'red', 'white', 3);
-const rectangle2 = new Furniture('Couch', [80, 0, 80, 35, 0, 35], 'blue');
-const polygon1 = new Furniture('TV', [13, 11, 40, 40, 60, 11]);
-const polygon2 = new Furniture('Cabinet', [60, 11, 6, 40, 60, 70]);
+const square = new Furniture('Chair', [18, 0, 18, 18, 0, 18], 'brown');
+const rectangle = new Furniture('Table', [30, 0, 30, 72, 0, 72], 'red', 'white', 3);
+const rectangle2 = new Furniture('Couch', [75, 0, 75, 35, 68, 35, 68, 30, 7, 30, 7, 35, 0, 35], 'blue');
+const polygon1 = new Furniture('TV', [34, 0, 34, 5, 31, 6, 3, 6, 0, 5]);
+const polygon2 = new Furniture('Cabinet', [40, 0, 40, 18, 0, 18], 'yellow', 'brown', 1);
 
 const furnitureList = [square, rectangle, rectangle2, polygon1, polygon2];
 
