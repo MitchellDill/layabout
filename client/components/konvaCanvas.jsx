@@ -53,7 +53,7 @@ export default class KonvaCanvas extends Component {
         return newState;
       });
     } else if (roomExists) {
-      console.log('hey');
+      console.log(selectedFurniture);
       const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
       this.setState((prevState) => ({ furniturePlaced: [...prevState.furniturePlaced, newFurniture] }));
     }
@@ -78,7 +78,7 @@ export default class KonvaCanvas extends Component {
             />
           ) : null}
           {roomExists && furniturePlaced.length > 0 ? (
-            furniturePlaced.map((furniture) => <FurnitureBrush type={furniture.name} x={furniture.x} y={furniture.y} />)
+            furniturePlaced.map((furniture) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} />)
           ) : null}
         </Layer>
       </Stage>
@@ -90,6 +90,7 @@ KonvaCanvas.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   cycleInstructions: PropTypes.func.isRequired,
+  selectedFurniture: PropTypes.string,
 };
 
 KonvaCanvas.defaultProps = {

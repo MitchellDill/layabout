@@ -1,26 +1,22 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-extraneous-dependencies */
 
 import React from 'react';
 import Konva from 'konva';
-import { Shape } from 'react-konva';
+import { Line } from 'react-konva';
 import PropTypes from 'prop-types';
+import furnitureList from '../model/furnitureDrawings';
 
 const FurnitureBrush = ({ type, x, y }) => {
-  console.log(type);
+  const furnitureInstructions = furnitureList[0].createPoints(x, y);
   return (
-    <Shape
-      sceneFunc={(context, shape) => {
-        context.beginPath();
-        context.moveTo(x, y);
-        context.lineTo(220, 80);
-        context.quadraticCurveTo(150, 100, 260, 170);
-        context.closePath();
-        // (!) Konva specific method, it is very important
-        context.fillStrokeShape(shape);
-      }}
+    <Line
+      points={[...furnitureInstructions]}
+      closed
       fill="brown"
       stroke="black"
-      strokeWidth={3}
+      strokeWidth={2}
       draggable
     />
   );

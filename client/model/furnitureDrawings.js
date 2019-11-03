@@ -1,15 +1,25 @@
 /* eslint-disable linebreak-style */
 
-class furniture {
-  constructor(lineWidth, brushShape, pointsArr) {
-    // pointsArr contains objs with x and y
+class Furniture {
+  constructor(pointsArr, lineWidth = 2, fill = true) {
     this.lineWidth = lineWidth,
-    this.brushShape = brushShape,
+    this.fill = fill,
     this.pointsArr = pointsArr,
-    this.numberOfPoints = pointsArr.length;
+    this.numberOfPoints = pointsArr.length / 2;
   }
 
-  drawShape() {
-    // write function which will draw out the appropriate shape when invoked
+  createPoints(x, y) {
+    const instancePoints = [x, y];
+    for (let i = 0; i < this.pointsArr.length; i++) {
+      const aproposAxis = i % 2 === 0 ? x : y;
+      instancePoints.push(this.pointsArr[i] + aproposAxis);
+    }
+    return instancePoints;
   }
 }
+
+const square = new Furniture([25, 0, 25, 25, 0, 25]);
+
+const furnitureList = [square];
+
+export default furnitureList;

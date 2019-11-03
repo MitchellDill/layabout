@@ -45,6 +45,7 @@ export default class App extends Component {
         if (prevState.furnitureCreateMode) {
           this.cycleInstructions(-1);
         }
+        console.log('app level:', name);
         return {
           selectedFurniture: name,
           furnitureCreateMode: false,
