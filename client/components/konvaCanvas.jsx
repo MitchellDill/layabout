@@ -39,6 +39,7 @@ export default class KonvaCanvas extends Component {
   }
 
   createRoom() {
+    const { updateRoom } = this.props;
     this.setState((prevState) => {
       const pointsArr = Polygon.translatePoints(prevState.roomCorners);
       const room = new Polygon(pointsArr);
@@ -46,7 +47,7 @@ export default class KonvaCanvas extends Component {
         roomExists: true,
         roomArea: room.area,
       };
-    });
+    }, updateRoom(this.state.roomCorners));
   }
 
   drawCoordinates(coordinates) {
@@ -70,8 +71,7 @@ export default class KonvaCanvas extends Component {
         return {
           furniturePlaced: [...prevState.furniturePlaced, newFurniture],
         };
-      });
-      updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture);
+      }, updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture));
     }
   }
 
@@ -105,6 +105,7 @@ KonvaCanvas.propTypes = {
   height: PropTypes.number.isRequired,
   cycleInstructions: PropTypes.func.isRequired,
   updateLayout: PropTypes.func.isRequired,
+  updateRoom: PropTypes.func.isRequired,
   selectedFurniture: PropTypes.string,
 };
 

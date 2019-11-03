@@ -19,6 +19,7 @@ export default class App extends Component {
       instructionIndex: 0,
       furnitureTypes: [],
       savedLayout: [],
+      savedRoom: [],
       selectedFurniture: '',
       furnitureCreateMode: false,
       isErrorShown: false,
@@ -26,6 +27,7 @@ export default class App extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.cycleInstructions = this.cycleInstructions.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
+    this.updateRoom = this.updateRoom.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +75,10 @@ export default class App extends Component {
     }
   }
 
+  updateRoom(coordinatesAsObjects) {
+    this.setState(() => ({ savedRoom: coordinatesAsObjects }));
+  }
+
   cycleInstructions(code = 1) {
     if (code === 404) {
       this.setState({ isErrorShown: true });
@@ -113,6 +119,7 @@ export default class App extends Component {
             isCreateButtonOn={furnitureCreateMode}
             selectedFurniture={selectedFurniture}
             updateLayout={this.updateLayout}
+            updateRoom={this.updateRoom}
           />
         </div>
         <aside>
