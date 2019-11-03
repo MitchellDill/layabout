@@ -18,13 +18,14 @@ export default class App extends Component {
       instructions: instructionsList,
       instructionIndex: 0,
       furnitureTypes: [],
-      furnitureInstances: [],
+      savedLayout: [],
       selectedFurniture: '',
       furnitureCreateMode: false,
       isErrorShown: false,
     };
     this.handleClick = this.handleClick.bind(this);
     this.cycleInstructions = this.cycleInstructions.bind(this);
+    this.updateLayout = this.updateLayout.bind(this);
   }
 
   componentDidMount() {
@@ -55,11 +56,28 @@ export default class App extends Component {
     }
   }
 
+  updateLayout(newX, newY, i, isNewPiece, furnitureType) {
+    if (isNewPiece) {
+      const newFurniture = { type: furnitureType, x: newX, y: newY };
+      this.setState((prevState) => ({
+        savedLayout: [...prevState.savedLayout, newFurniture],
+      }));
+    } else {
+      this.setState((prevState) => {
+        const layoutCoordinates = [...prevState.savedLayout];
+        const { x, y } = layoutCoordinates[i];
+        layoutCoordinates[i].x = x + newX;
+        layoutCoordinates[i].y = y + newY;
+        return { savedLayout: layoutCoordinates };
+      });
+    }
+  }
+
   cycleInstructions(code = 1) {
     if (code === 404) {
       this.setState({ isErrorShown: true });
     } else {
-      this.setState((prevState, nextState) => ({
+      this.setState((prevState) => ({
         instructionIndex: prevState.instructionIndex + code,
         isErrorShown: false,
       }));
@@ -77,7 +95,6 @@ export default class App extends Component {
       instructions,
       instructionIndex,
       furnitureTypes,
-      furnitureInstances,
       selectedFurniture,
       furnitureCreateMode,
       isErrorShown,
@@ -95,12 +112,12 @@ export default class App extends Component {
             cycleInstructions={this.cycleInstructions}
             isCreateButtonOn={furnitureCreateMode}
             selectedFurniture={selectedFurniture}
+            updateLayout={this.updateLayout}
           />
         </div>
         <aside>
           <FurnitureList
             furnitureTypes={furnitureTypes}
-            furnitureInstances={furnitureInstances}
             selectedFurniture={selectedFurniture}
             handleClick={this.handleClick}
           />

@@ -12,6 +12,7 @@ import FurnitureBrush from './furnitureBrush.jsx';
 import Polygon from '../model/polygonClass.js';
 import isPointInPolygon from '../model/mathHelpers.js';
 import styles from '../style/main.less';
+import furnitureList from '../model/furnitureList.js';
 
 export default class KonvaCanvas extends Component {
   constructor(props) {
@@ -25,7 +26,6 @@ export default class KonvaCanvas extends Component {
       roomArea: 0,
       roomExists: false,
       furniturePlaced: [],
-      isDragging: false,
     };
   }
 
@@ -36,25 +36,6 @@ export default class KonvaCanvas extends Component {
       y: e.evt.clientY - offsetY,
     };
     this.drawCoordinates(clickCoordinates);
-  }
-
-  drawCoordinates(coordinates) {
-    const { roomCorners, roomExists } = this.state;
-    const { cycleInstructions, selectedFurniture } = this.props;
-
-    if (roomCorners.length < 4 && !roomExists) {
-      this.setState((prevState) => {
-        const newState = { roomCorners: [...prevState.roomCorners, coordinates] };
-        if (newState.roomCorners.length === 4) {
-          this.createRoom();
-          cycleInstructions();
-        }
-        return newState;
-      });
-    } else if (roomExists && selectedFurniture !== '') {
-      const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
-      this.setState((prevState) => ({ furniturePlaced: [...prevState.furniturePlaced, newFurniture] }));
-    }
   }
 
   createRoom() {
@@ -68,14 +49,41 @@ export default class KonvaCanvas extends Component {
     });
   }
 
+  drawCoordinates(coordinates) {
+    const { roomCorners, roomExists } = this.state;
+    const { cycleInstructions, selectedFurniture, updateLayout } = this.props;
+
+    if (roomCorners.length < 4 && !roomExists) {
+      this.setState((prevState) => {
+        const newState = { roomCorners: [...prevState.roomCorners, coordinates] };
+        if (newState.roomCorners.length === 4) {
+          this.createRoom();
+          cycleInstructions();
+        }
+        return newState;
+      });
+    } else if (roomExists && selectedFurniture !== '') {
+      const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
+      let furnitureCount;
+      this.setState((prevState) => {
+        furnitureCount = prevState.furniturePlaced.length;
+        return {
+          furniturePlaced: [...prevState.furniturePlaced, newFurniture],
+        };
+      });
+      updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture);
+    }
+  }
+
   render() {
     const {
       width, height, roomCorners, roomExists, furniturePlaced,
     } = this.state;
+    const { updateLayout } = this.props;
     return (
       <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
         <Layer>
-          {roomCorners.length > 0 ? roomCorners.map((corner, i) => <Rect key={`roomCorner${roomCorners.length}index${i}`} x={corner.x} y={corner.y} width={2} height={2} fill="brown" />) : null}
+          {roomCorners.length > 0 ? roomCorners.map((corner, i) => <Rect x={corner.x} y={corner.y} width={2} height={2} fill="brown" key={`roomCorner${roomCorners.length}index${i}`} />) : null}
           {roomExists ? (
             <Line
               points={roomCorners.map((corner) => [corner.x, corner.y]).reduce((prev, current) => prev.concat(current))}
@@ -84,7 +92,7 @@ export default class KonvaCanvas extends Component {
             />
           ) : null}
           {roomExists && furniturePlaced.length > 0 ? (
-            furniturePlaced.map((furniture, i) => <FurnitureBrush key={`${furniture.type}000${furniturePlaced.length}index${i}`} type={furniture.type} x={furniture.x} y={furniture.y} />)
+            furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} key={`furniturePiece${i}`} />)
           ) : null}
         </Layer>
       </Stage>
@@ -96,6 +104,7 @@ KonvaCanvas.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   cycleInstructions: PropTypes.func.isRequired,
+  updateLayout: PropTypes.func.isRequired,
   selectedFurniture: PropTypes.string,
 };
 
