@@ -3,6 +3,7 @@
 
 import React, { Component } from 'react';
 import Canvas from './canvas.jsx';
+import KonvaCanvas from './konvaCanvas.jsx';
 import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
 import defaultFurnitureList from '../defaultFurnitureList.js';
@@ -89,7 +90,7 @@ export default class App extends Component {
           isErrorShown={isErrorShown}
         />
         <div>
-          <Canvas
+          <KonvaCanvas
             height={height}
             width={width}
             cycleInstructions={this.cycleInstructions}
