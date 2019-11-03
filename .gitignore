@@ -62,3 +62,6 @@ typings/
 
 # transpiled output of JSX
 public/bundle.js
+
+# database config
+database/pg.config.json
