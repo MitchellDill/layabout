@@ -12,6 +12,7 @@ const FurnitureBrush = ({ type, x, y }) => {
   const [selectedFurniture] = furnitureList.filter((furniture) => furniture.type === type);
   const furnitureStyle = selectedFurniture.getStyle();
   const furnitureInstructions = selectedFurniture.createPoints(x, y);
+  console.log(selectedFurniture.getArea());
   return (
     <Line
       points={[...furnitureInstructions]}

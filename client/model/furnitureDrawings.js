@@ -27,6 +27,39 @@ class Furniture {
     }
     return instancePoints;
   }
+
+  getArea() {
+    // get coordinates organized into x and y
+    const xCoordinates = [0];
+    const yCoordinates = [0];
+    for (let i = 0; i < this.pointsArr.length; i++) {
+      const coordinate = this.pointsArr[i];
+      i % 2 === 0 ? xCoordinates.push(coordinate) : yCoordinates.push(coordinate);
+    }
+    xCoordinates.push(0);
+    yCoordinates.push(0);
+
+    console.log('part 1:', xCoordinates, yCoordinates);
+    // add each array to its i + 1 counterpart
+    const firstSum = [...xCoordinates].reduce((prev, current, i, arr) => {
+      if (i !== arr.length - 1) {
+        return prev + (current * yCoordinates[i + 1]);
+      }
+      return prev;
+    });
+
+    const secondSum = [...yCoordinates].reduce((prev, current, i, arr) => {
+      if (i !== arr.length - 1) {
+        return prev + (current * xCoordinates[i + 1]);
+      }
+      return prev;
+    });
+
+    console.log('part 2:', firstSum, secondSum);
+    // now subtract the second from the first, and halve it
+
+    return (firstSum - secondSum) / 2;
+  }
 }
 
 const square = new Furniture('Chair', [25, 0, 25, 25, 0, 25], 'brown');

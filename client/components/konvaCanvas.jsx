@@ -50,7 +50,6 @@ export default class KonvaCanvas extends Component {
         return newState;
       });
     } else if (roomExists && selectedFurniture !== '') {
-      console.log(selectedFurniture);
       const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
       this.setState((prevState) => ({ furniturePlaced: [...prevState.furniturePlaced, newFurniture] }));
     }
