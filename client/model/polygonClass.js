@@ -1,16 +1,23 @@
 /* eslint-disable linebreak-style */
 
-class Furniture {
-  constructor(type, pointsArr, fill = 'black', stroke = 'black', strokeWidth = 2) {
-    this.type = type,
-    this.fill = fill,
-    this.stroke = stroke,
-    this.strokeWidth = strokeWidth,
-    this.pointsArr = pointsArr,
+export default class Polygon {
+  constructor(pointsArr, fill = 'black', stroke = 'black', strokeWidth = 2) {
+    this.fill = fill;
+    this.stroke = stroke;
+    this.strokeWidth = strokeWidth;
+    this.pointsArr = pointsArr;
     this.numberOfPoints = pointsArr.length / 2;
   }
 
-  getStyle() {
+  get area() {
+    return this.calculateArea();
+  }
+
+  get style() {
+    return this.formatStyleObject();
+  }
+
+  formatStyleObject() {
     const styleObject = {
       fill: this.fill,
       stroke: this.stroke,
@@ -28,7 +35,8 @@ class Furniture {
     return instancePoints;
   }
 
-  getArea() {
+
+  calculateArea() {
     // get coordinates organized into x and y
     const xCoordinates = [0];
     const yCoordinates = [0];
@@ -57,13 +65,3 @@ class Furniture {
     return (firstSum - secondSum) / 2;
   }
 }
-
-const square = new Furniture('Chair', [18, 0, 18, 18, 0, 18], 'brown');
-const rectangle = new Furniture('Table', [30, 0, 30, 72, 0, 72], 'red', 'white', 3);
-const rectangle2 = new Furniture('Couch', [75, 0, 75, 35, 68, 35, 68, 30, 7, 30, 7, 35, 0, 35], 'blue');
-const polygon1 = new Furniture('TV', [34, 0, 34, 5, 31, 6, 3, 6, 0, 5]);
-const polygon2 = new Furniture('Cabinet', [40, 0, 40, 18, 0, 18], 'yellow', 'brown', 1);
-
-const furnitureList = [square, rectangle, rectangle2, polygon1, polygon2];
-
-export default furnitureList;

@@ -6,13 +6,13 @@ import React from 'react';
 import Konva from 'konva';
 import { Line } from 'react-konva';
 import PropTypes from 'prop-types';
-import furnitureList from '../model/furnitureDrawings';
+import furnitureList from '../model/furnitureList.js';
 
 const FurnitureBrush = ({ type, x, y }) => {
   const [selectedFurniture] = furnitureList.filter((furniture) => furniture.type === type);
-  const furnitureStyle = selectedFurniture.getStyle();
+  const furnitureStyle = selectedFurniture.style;
   const furnitureInstructions = selectedFurniture.createPoints(x, y);
-  console.log(selectedFurniture.getArea());
+  console.log(selectedFurniture.area);
   return (
     <Line
       points={[...furnitureInstructions]}
