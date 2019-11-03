@@ -8,7 +8,7 @@ import {
   Stage, Layer, Rect, Line,
 } from 'react-konva';
 import PropTypes from 'prop-types';
-import ShapeWrapper from './shapeWrapper.jsx';
+import FurnitureBrush from './furnitureBrush.jsx';
 import styles from '../style/main.less';
 
 export default class KonvaCanvas extends Component {
@@ -74,11 +74,11 @@ export default class KonvaCanvas extends Component {
                 return prev.concat(current);
               })}
               closed
-              stroke="brown"
+              stroke="black"
             />
           ) : null}
           {roomExists && furniturePlaced.length > 0 ? (
-            furniturePlaced.map((furniture) => <ShapeWrapper type={furniture.name} x={furniture.x} y={furniture.y} />)
+            furniturePlaced.map((furniture) => <FurnitureBrush type={furniture.name} x={furniture.x} y={furniture.y} />)
           ) : null}
         </Layer>
       </Stage>

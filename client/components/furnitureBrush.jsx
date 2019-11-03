@@ -5,7 +5,7 @@ import Konva from 'konva';
 import { Shape } from 'react-konva';
 import PropTypes from 'prop-types';
 
-const ShapeWrapper = ({ type, x, y }) => {
+const FurnitureBrush = ({ type, x, y }) => {
   console.log(type);
   return (
     <Shape
@@ -18,20 +18,22 @@ const ShapeWrapper = ({ type, x, y }) => {
         // (!) Konva specific method, it is very important
         context.fillStrokeShape(shape);
       }}
-      fill="#00D2FF"
+      fill="brown"
       stroke="black"
-      strokeWidth={4}
+      strokeWidth={3}
       draggable
     />
   );
 };
 
-export default ShapeWrapper;
+export default FurnitureBrush;
 
-ShapeWrapper.propTypes = {
+FurnitureBrush.propTypes = {
   type: PropTypes.string,
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
 };
 
-ShapeWrapper.defaultProps = {
+FurnitureBrush.defaultProps = {
   type: 'chair',
 };
