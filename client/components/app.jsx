@@ -41,7 +41,7 @@ export default class App extends Component {
   selectFurniture(name) {
     const { furnitureTypes } = this.state;
     if (furnitureTypes.includes(name)) {
-      this.setState((prevState, nextState) => {
+      this.setState((prevState) => {
         if (prevState.furnitureCreateMode) {
           this.cycleInstructions(-1);
         }

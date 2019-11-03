@@ -1,5 +1,6 @@
-/* eslint-disable import/extensions */
 /* eslint-disable linebreak-style */
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-extraneous-dependencies */
 
 import React, { Component } from 'react';
 import Konva from 'konva';
@@ -7,6 +8,7 @@ import {
   Stage, Layer, Rect, Line,
 } from 'react-konva';
 import PropTypes from 'prop-types';
+import ShapeWrapper from './shapeWrapper.jsx';
 import styles from '../style/main.less';
 
 export default class KonvaCanvas extends Component {
@@ -21,8 +23,10 @@ export default class KonvaCanvas extends Component {
       roomExists: false,
       furnitureList: [],
       furniturePlaced: [],
+      selectedFurniture: this.props.selectedFurniture,
       placeX: 0,
       placeY: 0,
+      isDragging: false,
     };
   }
 
@@ -36,7 +40,7 @@ export default class KonvaCanvas extends Component {
   }
 
   drawCoordinates(coordinates) {
-    const { roomCorners, roomExists } = this.state;
+    const { roomCorners, roomExists, selectedFurniture } = this.state;
     const { cycleInstructions } = this.props;
 
     if (roomCorners.length < 4 && !roomExists) {
@@ -48,12 +52,16 @@ export default class KonvaCanvas extends Component {
         }
         return newState;
       });
+    } else if (roomExists) {
+      console.log('hey');
+      const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
+      this.setState((prevState) => ({ furniturePlaced: [...prevState.furniturePlaced, newFurniture] }));
     }
   }
 
   render() {
     const {
-      width, height, roomCorners, roomExists, furniturePlaced, placeX, placeY,
+      width, height, roomCorners, roomExists, furniturePlaced,
     } = this.state;
     return (
       <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
@@ -68,6 +76,9 @@ export default class KonvaCanvas extends Component {
               closed
               stroke="brown"
             />
+          ) : null}
+          {roomExists && furniturePlaced.length > 0 ? (
+            furniturePlaced.map((furniture) => <ShapeWrapper type={furniture.name} x={furniture.x} y={furniture.y} />)
           ) : null}
         </Layer>
       </Stage>
