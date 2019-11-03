@@ -9,6 +9,7 @@ import {
 } from 'react-konva';
 import PropTypes from 'prop-types';
 import FurnitureBrush from './furnitureBrush.jsx';
+import isPointInPolygon from '../model/mathHelpers.js';
 import styles from '../style/main.less';
 
 export default class KonvaCanvas extends Component {
@@ -65,10 +66,7 @@ export default class KonvaCanvas extends Component {
           {roomCorners.length > 0 ? roomCorners.map((corner) => <Rect x={corner.x} y={corner.y} width={2} height={2} fill="brown" />) : null}
           {roomExists ? (
             <Line
-              points={roomCorners.map((corner) => [corner.x, corner.y]).reduce((prev, current) => {
-                console.log(prev);
-                return prev.concat(current);
-              })}
+              points={roomCorners.map((corner) => [corner.x, corner.y]).reduce((prev, current) => prev.concat(current))}
               closed
               stroke="black"
             />

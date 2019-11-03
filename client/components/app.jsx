@@ -2,7 +2,6 @@
 /* eslint-disable linebreak-style */
 
 import React, { Component } from 'react';
-import Canvas from './canvas.jsx';
 import KonvaCanvas from './konvaCanvas.jsx';
 import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
