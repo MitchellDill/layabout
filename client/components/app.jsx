@@ -151,6 +151,8 @@ export default class App extends Component {
             furnitureTypes={furnitureTypes}
             selectedFurniture={selectedFurniture}
             handleClick={this.handleClick}
+            instanceOccupancy={selectedInstanceOccupancyPercentage}
+            typeOccupancy={selectedTypeOccupancyPercentage}
           />
           <CreateFurniture
             handleClick={this.handleClick}
