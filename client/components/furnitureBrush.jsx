@@ -19,6 +19,7 @@ const FurnitureBrush = ({
 
   return (
     <Line
+      id={selectedFurniture.type}
       points={[...furnitureInstructions]}
       closed
       fill={furnitureStyle.fill}
@@ -36,7 +37,7 @@ const FurnitureBrush = ({
         updateLayout(newX, newY, index, false);
       }}
       onClick={(e) => {
-        console.log(e);
+        handleClick(e, selectedFurniture, index);
       }}
     />
   );

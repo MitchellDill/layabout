@@ -5,9 +5,10 @@ import React, { Component } from 'react';
 import KonvaCanvas from './konvaCanvas.jsx';
 import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
+import Occupancy from './occupancy.jsx';
+import CreateFurniture from './createFurniture.jsx';
 import defaultFurnitureList from '../defaultFurnitureList.js';
 import instructionsList from '../instructionsList.js';
-import CreateFurniture from './createFurniture.jsx';
 
 export default class App extends Component {
   constructor(props) {
@@ -21,8 +22,9 @@ export default class App extends Component {
       savedLayout: [],
       savedRoom: [],
       furnitureTypeOccupancyPercentages: [],
-      selectedInstanceOccupancyPercentage: 0,
-      selectedInstanceIndex: 0,
+      selectedInstanceOccupancyPercentage: '',
+      selectedInstanceIndex: -1,
+      selectedInstanceFurnitureType: '',
       selectedFurniture: '',
       furnitureCreateMode: false,
       isErrorShown: false,
@@ -31,7 +33,7 @@ export default class App extends Component {
     this.cycleInstructions = this.cycleInstructions.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
-    this.showOccupancy = this.showOccupancy.bind(this);
+    this.findOccupancyPercentage = this.findOccupancyPercentage.bind(this);
   }
 
   componentDidMount() {
@@ -94,12 +96,17 @@ export default class App extends Component {
     }
   }
 
-  showOccupancy(e, i) {
-
+  showOccupancy(furniture, i) {
+    this.setState((prevState) => ({ selectedInstanceIndex: i, selectedInstanceFurnitureType: furniture.type.toLowerCase() }));
   }
 
-  handleClick(e) {
-    this.selectFurniture(e.target.innerHTML);
+  findOccupancyPercentage(percentage) {
+    const formattedPercentage = percentage.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    this.setState((prevState) => ({ selectedInstanceOccupancyPercentage: formattedPercentage }));
+  }
+
+  handleClick(e, furnitureObj = null, index = -1) {
+    index >= 0 ? this.showOccupancy(furnitureObj, index) : this.selectFurniture(e.target.innerHTML);
   }
 
   render() {
@@ -112,6 +119,9 @@ export default class App extends Component {
       selectedFurniture,
       furnitureCreateMode,
       isErrorShown,
+      selectedInstanceIndex,
+      selectedInstanceFurnitureType,
+      selectedInstanceOccupancyPercentage,
     } = this.state;
     return (
       <>
@@ -128,6 +138,9 @@ export default class App extends Component {
             selectedFurniture={selectedFurniture}
             updateLayout={this.updateLayout}
             updateRoom={this.updateRoom}
+            findOccupancyPercentage={this.findOccupancyPercentage}
+            occupancyIndex={selectedInstanceIndex}
+            handleClick={this.handleClick}
           />
         </div>
         <aside>
@@ -141,6 +154,14 @@ export default class App extends Component {
             selected={furnitureCreateMode}
             cycleInstructions={this.cycleInstructions}
           />
+          {selectedInstanceOccupancyPercentage !== ''
+            ? (
+              <Occupancy
+                furnitureType={selectedInstanceFurnitureType}
+                instanceOccupancy={selectedInstanceOccupancyPercentage}
+              />
+            )
+            : null}
         </aside>
         <footer>
           <h2>layabout a while, won't you?</h2>

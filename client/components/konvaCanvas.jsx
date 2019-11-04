@@ -29,6 +29,17 @@ export default class KonvaCanvas extends Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { occupancyIndex, findOccupancyPercentage } = this.props;
+    const { room, furniturePlaced } = this.state;
+    if (prevProps.occupancyIndex !== occupancyIndex) {
+      const { type } = furniturePlaced[occupancyIndex];
+      const [furniture] = furnitureList.filter((f) => f.type === type);
+      const spaceOccupied = room.calculateAreaOccupiedByAnotherPolygon(furniture);
+      findOccupancyPercentage(spaceOccupied);
+    }
+  }
+
   handleClick(e) {
     const { offsetX, offsetY } = this.state;
     const clickCoordinates = {
@@ -121,11 +132,13 @@ export default class KonvaCanvas extends Component {
 KonvaCanvas.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
+  selectedFurniture: PropTypes.string,
+  occupancyIndex: PropTypes.number.isRequired,
   cycleInstructions: PropTypes.func.isRequired,
   updateLayout: PropTypes.func.isRequired,
   updateRoom: PropTypes.func.isRequired,
-  selectedFurniture: PropTypes.string,
   handleClick: PropTypes.func.isRequired,
+  findOccupancyPercentage: PropTypes.func.isRequired,
 };
 
 KonvaCanvas.defaultProps = {
