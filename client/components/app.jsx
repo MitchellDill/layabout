@@ -47,7 +47,7 @@ export default class App extends Component {
   }
 
   selectFurniture(name) {
-    const { furnitureTypes } = this.state;
+    const { furnitureTypes, furnitureCreateMode } = this.state;
     if (furnitureTypes.includes(name)) {
       this.setState((prevState) => {
         if (prevState.furnitureCreateMode) {
@@ -58,7 +58,7 @@ export default class App extends Component {
           furnitureCreateMode: false,
         };
       });
-    } else if (name === 'Draw custom furniture') {
+    } else if (name === 'Draw custom furniture' && !furnitureCreateMode) {
       this.setState({ selectedFurniture: '', furnitureCreateMode: true });
       this.cycleInstructions();
     }

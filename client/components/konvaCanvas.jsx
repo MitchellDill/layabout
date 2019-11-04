@@ -10,6 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import FurnitureBrush from './furnitureBrush.jsx';
 import Polygon from '../model/polygonClass.js';
+import Furniture from '../model/furnitureClass.js';
 import styles from '../style/main.less';
 import furnitureList from '../model/furnitureList.js';
 
@@ -26,12 +27,14 @@ export default class KonvaCanvas extends Component {
       room: null,
       roomExists: false,
       furniturePlaced: [],
+      customShape: null,
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { occupancyIndex, findOccupancyPercentages } = this.props;
-    const { room, furniturePlaced } = this.state;
+    console.log(prevProps, this.props, this.state.customShape);
+    const { occupancyIndex, findOccupancyPercentages, isCreateButtonOn } = this.props;
+    const { room, furniturePlaced, customShape } = this.state;
     if ((prevProps.occupancyIndex !== occupancyIndex) || (occupancyIndex > 0 && prevState.furniturePlaced.length < furniturePlaced.length)) {
       const { type } = furniturePlaced[occupancyIndex];
       const [furnitureInstance] = furnitureList.filter((f) => f.type === type);
@@ -39,6 +42,10 @@ export default class KonvaCanvas extends Component {
       const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(furnitureInstance);
       const spaceOccupiedByAll = spaceOccupiedByOne * furnitureCount;
       findOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
+    }
+    if (prevProps.isCreateButtonOn !== isCreateButtonOn && customShape !== null) {
+      const customInstance = new Furniture(customShape.type, customShape.coordinates);
+      console.log(customInstance);
     }
   }
 
@@ -65,7 +72,9 @@ export default class KonvaCanvas extends Component {
   }
 
   drawCoordinates(coordinates) {
-    const { roomCorners, roomExists } = this.state;
+    const {
+      roomCorners, roomExists, furniturePlaced, isCreateButtonOn, customShape,
+    } = this.state;
     const { cycleInstructions, selectedFurniture, updateLayout } = this.props;
 
     if (roomCorners.length < 4 && !roomExists) {
@@ -88,7 +97,22 @@ export default class KonvaCanvas extends Component {
           };
         }, updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture));
       }
+    } else if (roomExists && selectedFurniture === '') {
+      console.log('tryin');
+      // if (this.checkLegalityOfPoint(coordinates)) {
+      // console.log('legal!');
+      if (customShape === null) {
+        const startNewShape = { type: `custom${furniturePlaced.length}`, coordinates: [coordinates.x, coordinates.y] };
+        this.setState(() => ({ customShape: startNewShape }));
+      } else {
+        this.setState((prevState) => {
+          const newShape = { ...prevState.customShape };
+          newShape.coordinates = [...prevState.customShape.coordinates, coordinates.x, coordinates.y];
+          return { customShape: newShape };
+        });
+      }
     }
+    // }
   }
 
   checkLegalityOfPoint(coordinates) {
@@ -136,6 +160,7 @@ KonvaCanvas.propTypes = {
   height: PropTypes.number.isRequired,
   selectedFurniture: PropTypes.string,
   occupancyIndex: PropTypes.number.isRequired,
+  isCreateButtonOn: PropTypes.bool.isRequired,
   cycleInstructions: PropTypes.func.isRequired,
   updateLayout: PropTypes.func.isRequired,
   updateRoom: PropTypes.func.isRequired,
