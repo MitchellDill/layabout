@@ -18,12 +18,12 @@ pool.on('error', (err) => {
 });
 
 const databaseStuff = async (name) => {
-  const query = 'SELECT ProductId FROM items WHERE name = $1;';
-  const values = [name];
+//   const query = 'SELECT ProductId FROM items WHERE name = $1;';
+//   const values = [name];
 
   const client = await pool.connect();
   try {
-    const { rows } = await pool.query(query, values);
+    const { rows } = await client.query(query, values);
     return rows[0];
   } finally {
     client.release();

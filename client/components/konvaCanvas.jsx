@@ -10,7 +10,6 @@ import {
 import PropTypes from 'prop-types';
 import FurnitureBrush from './furnitureBrush.jsx';
 import Polygon from '../model/polygonClass.js';
-import isPointInPolygon from '../model/mathHelpers.js';
 import styles from '../style/main.less';
 import furnitureList from '../model/furnitureList.js';
 
@@ -24,6 +23,7 @@ export default class KonvaCanvas extends Component {
       offsetY: 100,
       roomCorners: [],
       roomArea: 0,
+      room: null,
       roomExists: false,
       furniturePlaced: [],
     };
@@ -46,6 +46,7 @@ export default class KonvaCanvas extends Component {
       return {
         roomExists: true,
         roomArea: room.area,
+        room,
       };
     }, updateRoom(this.state.roomCorners));
   }
@@ -65,14 +66,25 @@ export default class KonvaCanvas extends Component {
       });
     } else if (roomExists && selectedFurniture !== '') {
       const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
-      let furnitureCount;
-      this.setState((prevState) => {
-        furnitureCount = prevState.furniturePlaced.length;
-        return {
-          furniturePlaced: [...prevState.furniturePlaced, newFurniture],
-        };
-      }, updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture));
+      if (this.checkLegalityOfPoint(coordinates)) {
+        let furnitureCount;
+        this.setState((prevState) => {
+          furnitureCount = prevState.furniturePlaced.length;
+          return {
+            furniturePlaced: [...prevState.furniturePlaced, newFurniture],
+          };
+        }, updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture));
+      }
     }
+  }
+
+  checkLegalityOfPoint(coordinates) {
+    const { roomCorners } = this.state;
+    const { selectedFurniture } = this.props;
+    const [furnitureBeingPlaced] = furnitureList.filter((furniture) => furniture.type === selectedFurniture);
+    const result = furnitureBeingPlaced.furnitureIsInPolygon(roomCorners, coordinates.x, coordinates.y);
+    console.log(result);
+    return result;
   }
 
   render() {
