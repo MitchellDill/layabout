@@ -32,9 +32,10 @@ export default class App extends Component {
     };
     this.handleClick = this.handleClick.bind(this);
     this.cycleInstructions = this.cycleInstructions.bind(this);
+    this.getFurnitureList = this.getFurnitureList.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
-    this.findOccupancyPercentages = this.findOccupancyPercentages.bind(this);
+    this.updateOccupancyPercentages = this.updateOccupancyPercentages.bind(this);
   }
 
   componentDidMount() {
@@ -60,11 +61,10 @@ export default class App extends Component {
         };
       }, this.getFurnitureList);
     } else if (name === 'Draw Custom Furniture' && !furnitureCreateMode) {
-      console.log(name);
       this.setState({ selectedFurniture: '', furnitureCreateMode: true });
       this.cycleInstructions();
     } else if (name === 'Finish Drawing' && furnitureCreateMode) {
-      this.setState({ furnitureCreateMode: false }, this.getFurnitureList);
+      this.setState({ furnitureCreateMode: false });
       this.cycleInstructions(-1);
     }
   }
@@ -102,16 +102,17 @@ export default class App extends Component {
   }
 
   showOccupancy(furniture, i) {
-    this.setState((prevState) => ({ selectedInstanceIndex: i, selectedInstanceFurnitureType: furniture.type.toLowerCase() }));
+    this.setState(() => ({ selectedInstanceIndex: i, selectedInstanceFurnitureType: furniture.type.toLowerCase() }));
   }
 
-  findOccupancyPercentages(instancePercentage, typePercentage) {
+  updateOccupancyPercentages(instancePercentage, typePercentage) {
     const formattedInstancePercentage = instancePercentage.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2 });
     const formattedTypePercentage = typePercentage.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2 });
     this.setState(() => ({ selectedInstanceOccupancyPercentage: formattedInstancePercentage, selectedTypeOccupancyPercentage: formattedTypePercentage }));
   }
 
   handleClick(e, furnitureObj = null, index = -1) {
+    // route click depending on whether instance parameters were passed to it or not
     index >= 0 ? this.showOccupancy(furnitureObj, index) : this.selectFurniture(e.target.innerHTML);
   }
 
@@ -132,10 +133,12 @@ export default class App extends Component {
     } = this.state;
     return (
       <>
-        <Instruction
-          message={instructions[instructionIndex]}
-          isErrorShown={isErrorShown}
-        />
+        <header>
+          <Instruction
+            message={instructions[instructionIndex]}
+            isErrorShown={isErrorShown}
+          />
+        </header>
         <div>
           <KonvaCanvas
             height={height}
@@ -145,9 +148,10 @@ export default class App extends Component {
             selectedFurniture={selectedFurniture}
             updateLayout={this.updateLayout}
             updateRoom={this.updateRoom}
-            findOccupancyPercentages={this.findOccupancyPercentages}
+            updateOccupancyPercentages={this.updateOccupancyPercentages}
             occupancyType={selectedInstanceFurnitureType}
             occupancyIndex={selectedInstanceIndex}
+            getFurnitureList={this.getFurnitureList}
             handleClick={this.handleClick}
           />
         </div>

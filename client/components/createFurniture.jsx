@@ -6,7 +6,7 @@ import { Button, Card } from '@material-ui/core';
 import style from '../style/main.less';
 
 const CreateFurniture = ({ handleClick, selected }) => {
-  const cardStyle = selected ? 'selectedFurnitureCard' : 'furnitureCard';
+  const cardStyle = selected ? 'selectedCreateFurnitureCard' : 'furnitureCard';
   const buttonText = selected ? 'Finish Drawing' : 'Draw Custom Furniture';
   return (
     <Button onClick={(e) => { handleClick(e); }}>

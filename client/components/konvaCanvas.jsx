@@ -8,12 +8,20 @@ import {
   Stage, Layer, Rect, Line,
 } from 'react-konva';
 import PropTypes from 'prop-types';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 import FurnitureBrush from './furnitureBrush.jsx';
 import Polygon from '../model/polygonClass.js';
 import Furniture from '../model/furnitureClass.js';
 import styles from '../style/main.less';
 import furnitureList from '../model/furnitureObjectList.js';
 import customFurnitureList from '../model/customFurnitureList.js';
+
 
 export default class KonvaCanvas extends Component {
   constructor(props) {
@@ -27,27 +35,20 @@ export default class KonvaCanvas extends Component {
       roomExists: false,
       furniturePlaced: [],
       customShape: null,
+      customShapeName: '',
+      isShapeNameDialogOpen: false,
     };
+    this.handleFormField = this.handleFormField.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { occupancyIndex, findOccupancyPercentages, isCreateButtonOn } = this.props;
-    const { room, furniturePlaced, customShape } = this.state;
+    const { occupancyIndex, isCreateButtonOn } = this.props;
+    const { furniturePlaced, customShape } = this.state;
     if ((prevProps.occupancyIndex !== occupancyIndex) || (occupancyIndex > 0 && prevState.furniturePlaced.length < furniturePlaced.length)) {
-      const { type } = furniturePlaced[occupancyIndex];
-      const [furnitureInstance] = furnitureList.filter((f) => f.type === type);
-      const furnitureCount = furniturePlaced.filter((f) => f.type === type).length;
-      const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(furnitureInstance);
-      const spaceOccupiedByAll = spaceOccupiedByOne * furnitureCount;
-      findOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
+      this.handleOccupancyUpdate();
     }
     if (prevProps.isCreateButtonOn !== isCreateButtonOn && customShape !== null) {
-      const pointsArr = Polygon.translateInstancePointsIntoClassPoints(customShape.coordinates);
-      const customInstance = new Furniture(customShape.type, pointsArr);
-      furnitureList.push(customInstance);
-      customFurnitureList.push(customShape.type);
-      console.log(customFurnitureList);
-      this.wipeCustomCoordinates();
+      this.handleOpenDialog();
     }
   }
 
@@ -102,9 +103,8 @@ export default class KonvaCanvas extends Component {
         cycleInstructions(404);
       }
     } else if (roomExists && selectedFurniture === '') {
-      console.log(coordinates);
       if (customShape === null) {
-        const startNewShape = { type: `custom${furniturePlaced.length + Math.floor(Math.random() * 500)}`, coordinates: [coordinates.x, coordinates.y] };
+        const startNewShape = { type: `custom${furniturePlaced.length}`, coordinates: [coordinates.x, coordinates.y] };
         this.setState(() => ({ customShape: startNewShape }));
       } else {
         this.setState((prevState) => {
@@ -131,42 +131,130 @@ export default class KonvaCanvas extends Component {
     return false;
   }
 
+  saveCustomFurniture() {
+    const { customShape, customShapeName } = this.state;
+    const { getFurnitureList } = this.props;
+    customShape.type = customShapeName;
+    const pointsArr = Polygon.translateInstancePointsIntoClassPoints(customShape.coordinates);
+    const customInstance = new Furniture(customShape.type, pointsArr);
+    furnitureList.push(customInstance);
+    customFurnitureList.push(customShape.type);
+    this.wipeCustomCoordinates();
+    getFurnitureList();
+  }
+
+  handleOccupancyUpdate() {
+    const { occupancyIndex } = this.props;
+    const { furniturePlaced } = this.state;
+    const { type } = furniturePlaced[occupancyIndex];
+
+    // filter for the correctFurnitureObject
+    const [furnitureInstance] = furnitureList.filter((f) => f.type === type);
+    // determine how many of this type are currently in the room
+    const furnitureCount = furniturePlaced.filter((f) => f.type === type).length;
+    // invoke calculation function
+    this.calculateOccupancy(furnitureInstance, furnitureCount);
+  }
+
+  calculateOccupancy(furnitureInstance, furnitureCount) {
+    const { updateOccupancyPercentages } = this.props;
+    const { room } = this.state;
+    const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(furnitureInstance);
+    const spaceOccupiedByAll = spaceOccupiedByOne * furnitureCount;
+    updateOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
+  }
+
   wipeCustomCoordinates() {
     this.setState(() => ({ customShape: null }));
   }
 
+  handleOpenDialog() {
+    this.setState(() => ({ isShapeNameDialogOpen: true }));
+  }
+
+  handleCloseDialog(callback = () => {}) {
+    this.setState(() => ({ isShapeNameDialogOpen: false }), callback);
+  }
+
+  handleFormField(e) {
+    const { value } = e.target;
+    this.setState(() => ({ customShapeName: value }));
+  }
+
   render() {
     const {
-      roomCorners, roomExists, furniturePlaced, customShape, offsetX, offsetY,
+      roomCorners, roomExists, furniturePlaced, customShape, isShapeNameDialogOpen,
     } = this.state;
     const {
       width, height, updateLayout, handleClick, isCreateButtonOn,
     } = this.props;
     return (
-      <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
-        <Layer>
-          {roomCorners.length > 0 ? roomCorners.map((corner, i) => <Rect x={corner.x} y={corner.y} width={2} height={2} fill="brown" key={`roomCorner${roomCorners.length}index${i}`} />) : null}
-          {roomExists ? (
-            <Line
-              points={roomCorners.map((corner) => [corner.x, corner.y]).reduce((prev, current) => prev.concat(current))}
-              closed
-              stroke="black"
+      <div>
+        <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
+          <Layer>
+            {roomCorners.length > 0 ? roomCorners.map((corner, i) => <Rect x={corner.x} y={corner.y} width={2} height={2} fill="brown" key={`roomCorner${roomCorners.length}index${i}`} />) : null}
+            {roomExists ? (
+              <Line
+                points={roomCorners.map((corner) => [corner.x, corner.y]).reduce((prev, current) => prev.concat(current))}
+                closed
+                stroke="black"
+              />
+            ) : null}
+            {roomExists && furniturePlaced.length > 0 ? (
+              furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} handleClick={handleClick} key={`furniturePiece${i}`} />)
+            ) : null}
+            {isCreateButtonOn && customShape !== null && customShape.coordinates.length > 1 ? customShape.coordinates.map((point, i, arr) => {
+              if (i !== arr.length - 1 && i % 2 === 0) {
+                const points = [arr[i - 2], arr[i - 1], point, arr[i + 1]];
+                return (
+                  <Line points={points} closed stroke="green" key={`sketching${i + 1}`} />
+                );
+              }
+            })
+              : null}
+          </Layer>
+        </Stage>
+        <Dialog open={isShapeNameDialogOpen} onClose={this.handleCloseDialog} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">Name your design</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              What did ya make, friend?
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="name"
+              type="name"
+              onChange={this.handleFormField}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  this.handleCloseDialog(this.saveCustomFurniture);
+                }
+              }}
+              fullWidth
             />
-          ) : null}
-          {roomExists && furniturePlaced.length > 0 ? (
-            furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} handleClick={handleClick} key={`furniturePiece${i}`} />)
-          ) : null}
-          {isCreateButtonOn && customShape !== null && customShape.coordinates.length > 1 ? customShape.coordinates.map((point, i, arr) => {
-            if (i !== arr.length - 1 && i % 2 === 0) {
-              const points = [arr[i - 2], arr[i - 1], point, arr[i + 1]];
-              console.log(points);
-              return (
-                <Line points={points} closed stroke="black" key={`heya${i}`} />
-              );
-          })
-            : null}
-        </Layer>
-      </Stage>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                this.handleCloseDialog(this.wipeCustomCoordinates);
+              }}
+              color="secondary"
+            >
+            Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                this.handleCloseDialog(this.saveCustomFurniture);
+              }}
+              color="primary"
+            >
+            Save Design
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     );
   }
 }
@@ -180,8 +268,9 @@ KonvaCanvas.propTypes = {
   cycleInstructions: PropTypes.func.isRequired,
   updateLayout: PropTypes.func.isRequired,
   updateRoom: PropTypes.func.isRequired,
+  getFurnitureList: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
-  findOccupancyPercentages: PropTypes.func.isRequired,
+  updateOccupancyPercentages: PropTypes.func.isRequired,
 };
 
 KonvaCanvas.defaultProps = {

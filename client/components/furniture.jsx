@@ -15,7 +15,7 @@ const Furniture = ({
   return (
     <Button onClick={(e) => { handleClick(e); }}>
       <Card className={style[cardStyle]}>
-        <Typography variant="h3">{`${name}`}</Typography>
+        <Typography variant="h4">{`${name}`}</Typography>
         {/* <Occupancy
           furnitureType={name}
           instanceOccupancy={instanceOccupancy}
