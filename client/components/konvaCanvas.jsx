@@ -29,14 +29,16 @@ export default class KonvaCanvas extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { occupancyIndex, findOccupancyPercentage } = this.props;
+  componentDidUpdate(prevProps, prevState) {
+    const { occupancyIndex, findOccupancyPercentages } = this.props;
     const { room, furniturePlaced } = this.state;
-    if (prevProps.occupancyIndex !== occupancyIndex) {
+    if ((prevProps.occupancyIndex !== occupancyIndex) || (occupancyIndex > 0 && prevState.furniturePlaced.length < furniturePlaced.length)) {
       const { type } = furniturePlaced[occupancyIndex];
-      const [furniture] = furnitureList.filter((f) => f.type === type);
-      const spaceOccupied = room.calculateAreaOccupiedByAnotherPolygon(furniture);
-      findOccupancyPercentage(spaceOccupied);
+      const [furnitureInstance] = furnitureList.filter((f) => f.type === type);
+      const furnitureCount = furniturePlaced.filter((f) => f.type === type).length;
+      const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(furnitureInstance);
+      const spaceOccupiedByAll = spaceOccupiedByOne * furnitureCount;
+      findOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
     }
   }
 
@@ -138,7 +140,7 @@ KonvaCanvas.propTypes = {
   updateLayout: PropTypes.func.isRequired,
   updateRoom: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
-  findOccupancyPercentage: PropTypes.func.isRequired,
+  findOccupancyPercentages: PropTypes.func.isRequired,
 };
 
 KonvaCanvas.defaultProps = {

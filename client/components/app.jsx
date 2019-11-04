@@ -14,14 +14,14 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 600,
-      width: 600,
+      height: 800,
+      width: 700,
       instructions: instructionsList,
       instructionIndex: 0,
       furnitureTypes: [],
       savedLayout: [],
       savedRoom: [],
-      furnitureTypeOccupancyPercentages: [],
+      selectedTypeOccupancyPercentage: '',
       selectedInstanceOccupancyPercentage: '',
       selectedInstanceIndex: -1,
       selectedInstanceFurnitureType: '',
@@ -33,7 +33,7 @@ export default class App extends Component {
     this.cycleInstructions = this.cycleInstructions.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
-    this.findOccupancyPercentage = this.findOccupancyPercentage.bind(this);
+    this.findOccupancyPercentages = this.findOccupancyPercentages.bind(this);
   }
 
   componentDidMount() {
@@ -100,9 +100,10 @@ export default class App extends Component {
     this.setState((prevState) => ({ selectedInstanceIndex: i, selectedInstanceFurnitureType: furniture.type.toLowerCase() }));
   }
 
-  findOccupancyPercentage(percentage) {
-    const formattedPercentage = percentage.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2 });
-    this.setState((prevState) => ({ selectedInstanceOccupancyPercentage: formattedPercentage }));
+  findOccupancyPercentages(instancePercentage, typePercentage) {
+    const formattedInstancePercentage = instancePercentage.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    const formattedTypePercentage = typePercentage.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    this.setState(() => ({ selectedInstanceOccupancyPercentage: formattedInstancePercentage, selectedTypeOccupancyPercentage: formattedTypePercentage }));
   }
 
   handleClick(e, furnitureObj = null, index = -1) {
@@ -122,6 +123,7 @@ export default class App extends Component {
       selectedInstanceIndex,
       selectedInstanceFurnitureType,
       selectedInstanceOccupancyPercentage,
+      selectedTypeOccupancyPercentage,
     } = this.state;
     return (
       <>
@@ -138,7 +140,8 @@ export default class App extends Component {
             selectedFurniture={selectedFurniture}
             updateLayout={this.updateLayout}
             updateRoom={this.updateRoom}
-            findOccupancyPercentage={this.findOccupancyPercentage}
+            findOccupancyPercentages={this.findOccupancyPercentages}
+            occupancyType={selectedInstanceFurnitureType}
             occupancyIndex={selectedInstanceIndex}
             handleClick={this.handleClick}
           />
@@ -159,6 +162,7 @@ export default class App extends Component {
               <Occupancy
                 furnitureType={selectedInstanceFurnitureType}
                 instanceOccupancy={selectedInstanceOccupancyPercentage}
+                typeOccupancy={selectedTypeOccupancyPercentage}
               />
             )
             : null}

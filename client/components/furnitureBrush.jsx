@@ -2,7 +2,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-extraneous-dependencies */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Konva from 'konva';
 import { Line } from 'react-konva';
 import PropTypes from 'prop-types';
@@ -51,6 +51,7 @@ FurnitureBrush.propTypes = {
   y: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
   updateLayout: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 FurnitureBrush.defaultProps = {
