@@ -12,7 +12,18 @@ export default class Furniture extends Polygon {
     return this.calculateArea(false);
   }
 
-  furnitureIsInPolygon(polygonCorners, originX, originY) {
+  isPointInFurniture(point, furnitureOriginX, furnitureOriginY) {
+    const allFurniturePoints = this.createPoints(furnitureOriginX, furnitureOriginY);
+    const formattedPoints = [];
+
+    for (let i = 0; i < allFurniturePoints.length; i += 2) {
+      formattedPoints.push({ x: allFurniturePoints[i], y: allFurniturePoints[i + 1] });
+    }
+
+    return Polygon.isPointInPolygon(point, formattedPoints);
+  }
+
+  isFurnitureInPolygon(polygonCorners, originX, originY) {
     const allFurniturePoints = this.createPoints(originX, originY);
     const formattedPoints = [];
 

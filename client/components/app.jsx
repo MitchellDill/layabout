@@ -20,6 +20,9 @@ export default class App extends Component {
       furnitureTypes: [],
       savedLayout: [],
       savedRoom: [],
+      furnitureTypeOccupancyPercentages: [],
+      selectedInstanceOccupancyPercentage: 0,
+      selectedInstanceIndex: 0,
       selectedFurniture: '',
       furnitureCreateMode: false,
       isErrorShown: false,
@@ -28,6 +31,7 @@ export default class App extends Component {
     this.cycleInstructions = this.cycleInstructions.bind(this);
     this.updateLayout = this.updateLayout.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
+    this.showOccupancy = this.showOccupancy.bind(this);
   }
 
   componentDidMount() {
@@ -88,6 +92,10 @@ export default class App extends Component {
         isErrorShown: false,
       }));
     }
+  }
+
+  showOccupancy(e, i) {
+
   }
 
   handleClick(e) {

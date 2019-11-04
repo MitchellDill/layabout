@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import furnitureList from '../model/furnitureList.js';
 
 const FurnitureBrush = ({
-  type, x, y, updateLayout, index,
+  type, x, y, updateLayout, handleClick, index,
 }) => {
   const [isDragging, drag] = useState(false);
 
@@ -27,12 +27,16 @@ const FurnitureBrush = ({
       draggable
       onDragStart={() => {
         drag(true);
+        console.log('dragged');
       }}
       onDragEnd={(e) => {
         drag(false);
         const newX = e.target.x();
         const newY = e.target.y();
         updateLayout(newX, newY, index, false);
+      }}
+      onClick={(e) => {
+        console.log(e);
       }}
     />
   );

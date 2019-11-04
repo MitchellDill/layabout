@@ -101,4 +101,8 @@ export default class Polygon {
 
     return Math.abs((firstSum - secondSum) / 2);
   }
+
+  calculateAreaOccupiedByAnotherPolygon(otherPolygon) {
+    return otherPolygon.area / this.area;
+  }
 }

@@ -79,19 +79,25 @@ export default class KonvaCanvas extends Component {
   }
 
   checkLegalityOfPoint(coordinates) {
-    const { roomCorners } = this.state;
+    const { roomCorners, furniturePlaced } = this.state;
     const { selectedFurniture } = this.props;
     const [furnitureBeingPlaced] = furnitureList.filter((furniture) => furniture.type === selectedFurniture);
-    const result = furnitureBeingPlaced.furnitureIsInPolygon(roomCorners, coordinates.x, coordinates.y);
-    console.log(result);
-    return result;
+    const furnitureIsWithinBounds = furnitureBeingPlaced.isFurnitureInPolygon(roomCorners, coordinates.x, coordinates.y);
+    const pointIsWithinFurniture = furniturePlaced.length === 0 ? false : furniturePlaced.some((furniture) => {
+      const [filteredFurniture] = furnitureList.filter((f) => f.type === furniture.type);
+      return filteredFurniture.isPointInFurniture(coordinates, furniture.x, furniture.y);
+    });
+    if (furnitureIsWithinBounds && !pointIsWithinFurniture) {
+      return true;
+    }
+    return false;
   }
 
   render() {
     const {
       width, height, roomCorners, roomExists, furniturePlaced,
     } = this.state;
-    const { updateLayout } = this.props;
+    const { updateLayout, handleClick } = this.props;
     return (
       <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
         <Layer>
@@ -104,7 +110,7 @@ export default class KonvaCanvas extends Component {
             />
           ) : null}
           {roomExists && furniturePlaced.length > 0 ? (
-            furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} key={`furniturePiece${i}`} />)
+            furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} handleClick={handleClick} key={`furniturePiece${i}`} />)
           ) : null}
         </Layer>
       </Stage>
@@ -119,6 +125,7 @@ KonvaCanvas.propTypes = {
   updateLayout: PropTypes.func.isRequired,
   updateRoom: PropTypes.func.isRequired,
   selectedFurniture: PropTypes.string,
+  handleClick: PropTypes.func.isRequired,
 };
 
 KonvaCanvas.defaultProps = {
