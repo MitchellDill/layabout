@@ -7,10 +7,11 @@ import style from '../style/main.less';
 
 const CreateFurniture = ({ handleClick, selected }) => {
   const cardStyle = selected ? 'selectedFurnitureCard' : 'furnitureCard';
+  const buttonText = selected ? 'Finish Drawing' : 'Draw Custom Furniture';
   return (
     <Button onClick={(e) => { handleClick(e); }}>
       <Card className={style[cardStyle]}>
-        <h3>Draw custom furniture</h3>
+        <h3>{buttonText}</h3>
       </Card>
     </Button>
   );

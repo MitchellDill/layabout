@@ -22,6 +22,12 @@ export default class Polygon {
     return arrOfObjects.map((obj) => [obj.x, obj.y]).reduce((prev, curr) => prev.concat(curr[0], curr[1]), []);
   }
 
+  static translateInstancePointsIntoClassPoints(pointsArr) {
+    const zeroOriginPoints = [...pointsArr].map((point, i, arr) => (i % 2 ? point - arr[1] : point - arr[0]));
+    return zeroOriginPoints.slice(2);
+  }
+
+
   static isPointInPolygon(p, polygon) {
     let isInside = false;
     let minX = polygon[0].x;

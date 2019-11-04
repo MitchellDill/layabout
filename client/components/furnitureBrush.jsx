@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import Konva from 'konva';
 import { Line } from 'react-konva';
 import PropTypes from 'prop-types';
-import furnitureList from '../model/furnitureList.js';
+import furnitureList from '../model/furnitureObjectList.js';
 
 const FurnitureBrush = ({
   type, x, y, updateLayout, handleClick, index,

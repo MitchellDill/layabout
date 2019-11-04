@@ -7,8 +7,9 @@ import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
 import Occupancy from './occupancy.jsx';
 import CreateFurniture from './createFurniture.jsx';
-import defaultFurnitureList from '../defaultFurnitureList.js';
-import instructionsList from '../instructionsList.js';
+import defaultFurnitureList from '../model/defaultFurnitureList.js';
+import customFurnitureList from '../model/customFurnitureList.js';
+import instructionsList from '../model/instructionsList.js';
 
 export default class App extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ export default class App extends Component {
 
   getFurnitureList() {
     this.setState({
-      furnitureTypes: defaultFurnitureList,
+      furnitureTypes: defaultFurnitureList.concat(customFurnitureList),
     });
   }
 
@@ -57,10 +58,14 @@ export default class App extends Component {
           selectedFurniture: name,
           furnitureCreateMode: false,
         };
-      });
-    } else if (name === 'Draw custom furniture' && !furnitureCreateMode) {
+      }, this.getFurnitureList);
+    } else if (name === 'Draw Custom Furniture' && !furnitureCreateMode) {
+      console.log(name);
       this.setState({ selectedFurniture: '', furnitureCreateMode: true });
       this.cycleInstructions();
+    } else if (name === 'Finish Drawing' && furnitureCreateMode) {
+      this.setState({ furnitureCreateMode: false }, this.getFurnitureList);
+      this.cycleInstructions(-1);
     }
   }
 

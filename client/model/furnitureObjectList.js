@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 
 import Furniture from './furnitureClass.js';
-import defaultFurnitureList from '../defaultFurnitureList.js';
+import defaultFurnitureList from './defaultFurnitureList.js';
 import {
   chair, table, couch, tv, cabinet,
 } from './furnitureBuildCoordinates.js';

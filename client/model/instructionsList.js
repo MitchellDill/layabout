@@ -3,7 +3,7 @@
 const instructionsList = [
   'Draw your room!',
   'Select your furniture!',
-  'Don\'t see your piece on the list? Draw it in the room!',
+  'Click points in the room to create the corners of your furniture!',
 ];
 
 export default instructionsList;

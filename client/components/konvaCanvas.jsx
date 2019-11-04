@@ -12,7 +12,8 @@ import FurnitureBrush from './furnitureBrush.jsx';
 import Polygon from '../model/polygonClass.js';
 import Furniture from '../model/furnitureClass.js';
 import styles from '../style/main.less';
-import furnitureList from '../model/furnitureList.js';
+import furnitureList from '../model/furnitureObjectList.js';
+import customFurnitureList from '../model/customFurnitureList.js';
 
 export default class KonvaCanvas extends Component {
   constructor(props) {
@@ -32,7 +33,6 @@ export default class KonvaCanvas extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(prevProps, this.props, this.state.customShape);
     const { occupancyIndex, findOccupancyPercentages, isCreateButtonOn } = this.props;
     const { room, furniturePlaced, customShape } = this.state;
     if ((prevProps.occupancyIndex !== occupancyIndex) || (occupancyIndex > 0 && prevState.furniturePlaced.length < furniturePlaced.length)) {
@@ -44,8 +44,12 @@ export default class KonvaCanvas extends Component {
       findOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
     }
     if (prevProps.isCreateButtonOn !== isCreateButtonOn && customShape !== null) {
-      const customInstance = new Furniture(customShape.type, customShape.coordinates);
-      console.log(customInstance);
+      const pointsArr = Polygon.translateInstancePointsIntoClassPoints(customShape.coordinates);
+      const customInstance = new Furniture(customShape.type, pointsArr);
+      furnitureList.push(customInstance);
+      customFurnitureList.push(customShape.type);
+      console.log(customFurnitureList);
+      this.wipeCustomCoordinates();
     }
   }
 
@@ -102,7 +106,7 @@ export default class KonvaCanvas extends Component {
       // if (this.checkLegalityOfPoint(coordinates)) {
       // console.log('legal!');
       if (customShape === null) {
-        const startNewShape = { type: `custom${furniturePlaced.length}`, coordinates: [coordinates.x, coordinates.y] };
+        const startNewShape = { type: `custom${furniturePlaced.length + Math.floor(Math.random() * 500)}`, coordinates: [coordinates.x, coordinates.y] };
         this.setState(() => ({ customShape: startNewShape }));
       } else {
         this.setState((prevState) => {
@@ -128,6 +132,10 @@ export default class KonvaCanvas extends Component {
       return true;
     }
     return false;
+  }
+
+  wipeCustomCoordinates() {
+    this.setState(() => ({ customShape: null }));
   }
 
   render() {
