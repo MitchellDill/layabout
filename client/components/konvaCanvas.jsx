@@ -19,8 +19,6 @@ export default class KonvaCanvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      width: this.props.width,
-      height: this.props.height,
       offsetX: 100,
       offsetY: 100,
       roomCorners: [],
@@ -100,11 +98,11 @@ export default class KonvaCanvas extends Component {
             furniturePlaced: [...prevState.furniturePlaced, newFurniture],
           };
         }, updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture));
+      } else {
+        cycleInstructions(404);
       }
     } else if (roomExists && selectedFurniture === '') {
-      console.log('tryin');
-      // if (this.checkLegalityOfPoint(coordinates)) {
-      // console.log('legal!');
+      console.log(coordinates);
       if (customShape === null) {
         const startNewShape = { type: `custom${furniturePlaced.length + Math.floor(Math.random() * 500)}`, coordinates: [coordinates.x, coordinates.y] };
         this.setState(() => ({ customShape: startNewShape }));
@@ -116,7 +114,6 @@ export default class KonvaCanvas extends Component {
         });
       }
     }
-    // }
   }
 
   checkLegalityOfPoint(coordinates) {
@@ -140,9 +137,11 @@ export default class KonvaCanvas extends Component {
 
   render() {
     const {
-      width, height, roomCorners, roomExists, furniturePlaced,
+      roomCorners, roomExists, furniturePlaced, customShape, offsetX, offsetY,
     } = this.state;
-    const { updateLayout, handleClick } = this.props;
+    const {
+      width, height, updateLayout, handleClick, isCreateButtonOn,
+    } = this.props;
     return (
       <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
         <Layer>
@@ -157,6 +156,15 @@ export default class KonvaCanvas extends Component {
           {roomExists && furniturePlaced.length > 0 ? (
             furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} handleClick={handleClick} key={`furniturePiece${i}`} />)
           ) : null}
+          {isCreateButtonOn && customShape !== null && customShape.coordinates.length > 1 ? customShape.coordinates.map((point, i, arr) => {
+            if (i !== arr.length - 1 && i % 2 === 0) {
+              const points = [arr[i - 2], arr[i - 1], point, arr[i + 1]];
+              console.log(points);
+              return (
+                <Line points={points} closed stroke="black" key={`heya${i}`} />
+              );
+          })
+            : null}
         </Layer>
       </Stage>
     );

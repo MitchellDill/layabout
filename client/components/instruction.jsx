@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Instruction = ({ message, isErrorShown }) => {
-  const messageDisplayed = isErrorShown ? 'You need to draw a room, first.' : message;
+  const messageDisplayed = isErrorShown ? 'Error! You either need a room, or you need a bigger room.' : message;
   return (
     <header>
       <h1>{`${messageDisplayed}`}</h1>
