@@ -17,7 +17,7 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
-const databaseStuff = async (name) => {
+const getMyFloorPLans = async (name) => {
 //   const query = 'SELECT ProductId FROM items WHERE name = $1;';
 //   const values = [name];
 
