@@ -16,18 +16,22 @@ CREATE TABLE users_furnitureList (
 
 CREATE TABLE rooms (
     id serial PRIMARY KEY,
-    point1 INTEGER NOT NULL,
-    point2 INTEGER NOT NULL,
-    point3 INTEGER NOT NULL,
-    point4 INTEGER,
-    point5 INTEGER,
-    point6 INTEGER,
-    point7 INTEGER,
-    point8 INTEGER,
-    point9 INTEGER,
-    point10 INTEGER,
-    point11 INTEGER,
-    point12 INTEGER
+    point1x INTEGER NOT NULL,
+    point1y INTEGER NOT NULL,
+    point2x INTEGER NOT NULL,
+    point2y INTEGER NOT NULL,
+    point3x INTEGER NOT NULL,
+    point3y INTEGER NOT NULL,
+    point4x INTEGER,
+    point4y INTEGER,
+    point5x INTEGER,
+    point5y INTEGER,
+    point6x INTEGER,
+    point6y INTEGER,
+    point7x INTEGER,
+    point7y INTEGER,
+    point8x INTEGER,
+    point8y INTEGER
 );
 
 CREATE TABLE furniture_rooms (

@@ -13,59 +13,68 @@ app.use(cookieParser());
 app.use(cookieCheck);
 app.use(express.static('public'));
 
-app.get('/users/:userId', async (req, res) => {
-  let user;
-  // const { month, year } = req.query;
-  try {
-    // roomCoordinates = await getFloorplans(month, year);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    res.send({ roomCoordinates });
-  }
-});
+// app.get('/users', async (req, res) => {
+//   const sessionId = req.cookie.user_session;
+//   try {
+//     roomCoordinates = await getFloorplans(month, year);
+//   } catch (e) {
+//     console.error(e);
+//   } finally {
+//     res.send({ roomCoordinates });
+//   }
+// });
 
-app.route('/users/floorplans/')
+app.route('/users/floorplans')
   .get(async (req, res) => {
-    let floorPlans;
-    // const { month, year } = req.query;
+    let myFloorPlans;
+    const sessionId = req.cookie.user_session;
     try {
-    // roomCoordinates = await getFloorplans(month, year);
+      // myFloorPlans = await getMyFloorplans(sessionId);
     } catch (e) {
       console.error(e);
     } finally {
-      res.send({ roomCoordinates });
+      res.send({ myFloorPlans });
     }
   })
   .post(async (req, res) => {
-    const floorPlan = req.body;
+    const { floorPlan, isNewRoom } = req.body;
+    const sessionId = req.cookie.user_session;
     try {
-    // await insertFloorPLan(month);
-      res.status(201).send('posted! good plan.');
+      if (isNewRoom) {
+        // await insertRoom(floorplan.roomCoordinates)
+        // return roomid
+      } else {
+        // await findRoom(floorplan.roomCoordinates)
+      }
+      res.status(201);
     } catch (e) {
       console.error(e);
-      res.send(
-        'something went wrong! do you still have a floor?',
-      );
+      res.status(404);
+    } finally {
+      // await insertFloorPLan(floorPlan, roomId);
+      res.send();
     }
   });
 
 app.route('/users/furnitureList')
   .get(async (req, res) => {
-    let floorPlans;
-    // const { month, year } = req.query;
+    let myFurnitureList;
+    const sessionId = req.cookie.user_session;
     try {
-    // roomCoordinates = await getFloorplans(month, year);
+    // myFurnitureList = await getMyFurnitureList(sessionId);
     } catch (e) {
       console.error(e);
     } finally {
       res.send({ furnitureList });
     }
   })
-  .post('/users/furnitureList', async (req, res) => {
-    const furnitureList = req.body;
+  .post(async (req, res) => {
+    const { newFurniture } = req.body;
+    const sessionId = req.cookie.user_session;
     try {
-    // await insertFloorPLan(month);
+    // await insertFurniture(newFurniture.name);
+    // return furnitureId
+    // await associateUserWithFurniture(newFurnitureId, sessionId)
       res.status(201).send('posted! good list.');
     } catch (e) {
       console.error(e);
@@ -73,15 +82,33 @@ app.route('/users/furnitureList')
         'something went wrong saving your creation, dear friend.',
       );
     }
+  })
+  .delete(async (req, res) => {
+    const { deletedFurniture } = req.body;
+    const sessionId = req.cookie.user_session;
+    try {
+    // await disassociateFurniture(deletedFurniture.name, sessionID);
+    // return furnitureId
+    // await check if anyone still associates with furniture;
+    // deleteFurnitureId(furnitureId)
+      res.status(203).send('deleted! you are no longer associated with this piece.');
+    } catch (e) {
+      console.error(e);
+      res.send(
+        'something went wrong deleted your creation, dear friend.',
+      );
+    }
   });
 
 app.get('/reports', async (req, res) => {
+  let report;
   try {
     // fire report query
   } catch (e) {
     console.error(e);
   } finally {
     // send report
+    res.send(report);
   }
 });
 
