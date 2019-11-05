@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import Konva from 'konva';
 import {
-  Stage, Layer, Rect, Line,
+ Stage, Layer, Rect, Line 
 } from 'react-konva';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
@@ -21,7 +21,6 @@ import Furniture from '../model/furnitureClass.js';
 import styles from '../style/main.less';
 import furnitureList from '../model/furnitureObjectList.js';
 import customFurnitureList from '../model/customFurnitureList.js';
-
 
 export default class KonvaCanvas extends Component {
   constructor(props) {
@@ -44,10 +43,17 @@ export default class KonvaCanvas extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { occupancyIndex, isCreateButtonOn } = this.props;
     const { furniturePlaced, customShape } = this.state;
-    if ((prevProps.occupancyIndex !== occupancyIndex) || (occupancyIndex > 0 && prevState.furniturePlaced.length < furniturePlaced.length)) {
+    if (
+      prevProps.occupancyIndex !== occupancyIndex
+      || (occupancyIndex > 0
+        && prevState.furniturePlaced.length < furniturePlaced.length)
+    ) {
       this.handleOccupancyUpdate();
     }
-    if (prevProps.isCreateButtonOn !== isCreateButtonOn && customShape !== null) {
+    if (
+      prevProps.isCreateButtonOn !== isCreateButtonOn
+      && customShape !== null
+    ) {
       this.handleOpenDialog();
     }
   }
@@ -77,13 +83,19 @@ export default class KonvaCanvas extends Component {
 
   drawCoordinates(coordinates) {
     const {
-      roomCorners, roomExists, furniturePlaced, isCreateButtonOn, customShape,
+      roomCorners,
+      roomExists,
+      furniturePlaced,
+      isCreateButtonOn,
+      customShape,
     } = this.state;
     const { cycleInstructions, selectedFurniture, updateLayout } = this.props;
 
     if (roomCorners.length < 4 && !roomExists) {
       this.setState((prevState) => {
-        const newState = { roomCorners: [...prevState.roomCorners, coordinates] };
+        const newState = {
+          roomCorners: [...prevState.roomCorners, coordinates],
+        };
         if (newState.roomCorners.length === 4) {
           this.createRoom();
           cycleInstructions();
@@ -91,7 +103,11 @@ export default class KonvaCanvas extends Component {
         return newState;
       });
     } else if (roomExists && selectedFurniture !== '') {
-      const newFurniture = { type: selectedFurniture, x: coordinates.x, y: coordinates.y };
+      const newFurniture = {
+        type: selectedFurniture,
+        x: coordinates.x,
+        y: coordinates.y,
+      };
       if (this.checkLegalityOfPoint(coordinates)) {
         let furnitureCount;
         this.setState((prevState) => {
@@ -105,12 +121,19 @@ export default class KonvaCanvas extends Component {
       }
     } else if (roomExists && selectedFurniture === '') {
       if (customShape === null) {
-        const startNewShape = { type: `custom${furniturePlaced.length}`, coordinates: [coordinates.x, coordinates.y] };
+        const startNewShape = {
+          type: `custom${furniturePlaced.length}`,
+          coordinates: [coordinates.x, coordinates.y],
+        };
         this.setState(() => ({ customShape: startNewShape }));
       } else {
         this.setState((prevState) => {
           const newShape = { ...prevState.customShape };
-          newShape.coordinates = [...prevState.customShape.coordinates, coordinates.x, coordinates.y];
+          newShape.coordinates = [
+            ...prevState.customShape.coordinates,
+            coordinates.x,
+            coordinates.y,
+          ];
           return { customShape: newShape };
         });
       }
@@ -122,10 +145,18 @@ export default class KonvaCanvas extends Component {
     // const { selectedFurniture } = this.props;
     // const [furnitureBeingPlaced] = furnitureList.filter((furniture) => furniture.type === selectedFurniture);
     // const furnitureIsWithinBounds = furnitureBeingPlaced.isFurnitureInPolygon(roomCorners, coordinates.x, coordinates.y);
-    const pointIsWithinFurniture = furniturePlaced.length === 0 ? false : furniturePlaced.some((furniture) => {
-      const [filteredFurniture] = furnitureList.filter((f) => f.type === furniture.type);
-      return filteredFurniture.isPointInFurniture(coordinates, furniture.x, furniture.y);
-    });
+    const pointIsWithinFurniture =      furniturePlaced.length === 0
+        ? false
+        : furniturePlaced.some((furniture) => {
+          const [filteredFurniture] = furnitureList.filter(
+            (f) => f.type === furniture.type,
+          );
+          return filteredFurniture.isPointInFurniture(
+            coordinates,
+            furniture.x,
+            furniture.y,
+          );
+        });
     // deleted furnitureIsWithinBounds from conditional check below
     if (!pointIsWithinFurniture) {
       return true;
@@ -137,7 +168,9 @@ export default class KonvaCanvas extends Component {
     const { customShape, customShapeName } = this.state;
     const { getFurnitureList } = this.props;
     customShape.type = customShapeName;
-    const pointsArr = Polygon.translateInstancePointsIntoClassPoints(customShape.coordinates);
+    const pointsArr = Polygon.translateInstancePointsIntoClassPoints(
+      customShape.coordinates,
+    );
     const customInstance = new Furniture(customShape.type, pointsArr);
     furnitureList.push(customInstance);
     customFurnitureList.push(customShape.type);
@@ -162,7 +195,9 @@ export default class KonvaCanvas extends Component {
     const { updateOccupancyPercentages } = this.props;
     const { room } = this.state;
 
-    const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(furnitureInstance);
+    const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(
+      furnitureInstance,
+    );
     const spaceOccupiedByAll = spaceOccupiedByOne * furnitureCount;
     updateOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
   }
@@ -186,43 +221,91 @@ export default class KonvaCanvas extends Component {
 
   render() {
     const {
-      roomCorners, roomExists, furniturePlaced, customShape, isShapeNameDialogOpen,
+      roomCorners,
+      roomExists,
+      furniturePlaced,
+      customShape,
+      isShapeNameDialogOpen,
     } = this.state;
     const {
-      width, height, updateLayout, handleClick, isCreateButtonOn,
+      width,
+      height,
+      updateLayout,
+      handleClick,
+      isCreateButtonOn,
     } = this.props;
     return (
       <div>
-        <Stage height={height} width={width} className={styles.room} onClick={(e) => { this.handleClick(e); }}>
+        <Stage
+          height={height}
+          width={width}
+          className={styles.room}
+          onClick={(e) => {
+            this.handleClick(e);
+          }}
+        >
           <Layer>
-            {roomCorners.length > 0 ? roomCorners.map((corner, i) => <Rect x={corner.x} y={corner.y} width={2} height={2} fill="brown" key={`roomCorner${roomCorners.length}index${i}`} />) : null}
+            {roomCorners.length > 0
+              ? roomCorners.map((corner, i) => (
+                <Rect
+                    x={corner.x}
+                    y={corner.y}
+                    width={2}
+                    height={2}
+                    fill="brown"
+                    key={`roomCorner${roomCorners.length}index${i}`}
+                  />
+              ))
+              : null}
             {roomExists ? (
               <Line
-                points={roomCorners.map((corner) => [corner.x, corner.y]).reduce((prev, current) => prev.concat(current))}
+                points={roomCorners
+                  .map((corner) => [corner.x, corner.y])
+                  .reduce((prev, current) => prev.concat(current))}
                 closed
                 stroke="black"
               />
             ) : null}
-            {roomExists && furniturePlaced.length > 0 ? (
-              furniturePlaced.map((furniture, i) => <FurnitureBrush type={furniture.type} x={furniture.x} y={furniture.y} index={i} updateLayout={updateLayout} handleClick={handleClick} key={`furniturePiece${i}`} />)
-            ) : null}
-            {isCreateButtonOn && customShape !== null && customShape.coordinates.length > 1 ? customShape.coordinates.map((point, i, arr) => {
-              if (i !== arr.length - 1 && i % 2 === 0) {
-                const points = [arr[i - 2], arr[i - 1], point, arr[i + 1]];
-                return (
-                  <Line points={points} closed stroke="green" key={`sketching${i + 1}`} />
-                );
-              }
-            })
+            {roomExists && furniturePlaced.length > 0
+              ? furniturePlaced.map((furniture, i) => (
+                <FurnitureBrush
+                    type={furniture.type}
+                    x={furniture.x}
+                    y={furniture.y}
+                    index={i}
+                    updateLayout={updateLayout}
+                    handleClick={handleClick}
+                    key={`furniturePiece${i}`}
+                  />
+              ))
+              : null}
+            {isCreateButtonOn
+            && customShape !== null
+            && customShape.coordinates.length > 1
+              ? customShape.coordinates.map((point, i, arr) => {
+                if (i !== arr.length - 1 && i % 2 === 0) {
+                  const points = [arr[i - 2], arr[i - 1], point, arr[i + 1]];
+                  return (
+                      <Line
+                        points={points}
+                        closed
+                        stroke="green"
+                        key={`sketching${i + 1}`}
+                      />
+                  );
+                }
+              })
               : null}
           </Layer>
         </Stage>
-        <Dialog open={isShapeNameDialogOpen} onClose={this.handleCloseDialog} aria-labelledby="form-dialog-title">
+        <Dialog
+          open={isShapeNameDialogOpen}
+          onClose={this.handleCloseDialog}
+          aria-labelledby="form-dialog-title"
+        >
           <DialogTitle id="form-dialog-title">Name your design</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              What did ya make, friend?
-            </DialogContentText>
+            <DialogContentText>What did ya make, friend?</DialogContentText>
             <TextField
               autoFocus
               margin="dense"
@@ -245,7 +328,7 @@ export default class KonvaCanvas extends Component {
               }}
               color="secondary"
             >
-            Cancel
+              Cancel
             </Button>
             <Button
               onClick={() => {
@@ -253,7 +336,7 @@ export default class KonvaCanvas extends Component {
               }}
               color="primary"
             >
-            Save Design
+              Save Design
             </Button>
           </DialogActions>
         </Dialog>
