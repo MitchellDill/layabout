@@ -89,22 +89,6 @@ app.post('/api/furnitureLists', async (req, res) => {
   }
 });
 
-
-app.get('/', async (req, res) => {
-  // try {
-  //   if (!req.cookies.user_session) {
-  //     sessionId = Math.floor(Math.random() * 500000).toString();
-  //     // await post userId to DB with session ID
-  //     res.cookie('user_session', sessionId);
-  //   }
-  // } catch (e) {
-  //   console.error(e);
-  // } finally {
-  //   res.status(200).send('cookie created!');
-  // }
-});
-
-
 app.listen(PORT, () => {
   console.log(`Follow me to port ${PORT}`);
 });

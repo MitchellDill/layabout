@@ -1,14 +1,15 @@
 /* eslint-disable linebreak-style */
 
-const cookieGenerator = () => {
+const cookieGenerator = async () => {
   const sessionId = Math.floor(Math.random() * 500000).toString();
   // await post userId to DB with session ID
   return sessionId;
 };
 
-const cookieCheck = (req, res, next) => {
+const cookieCheck = async (req, res, next) => {
   if (!req.cookies.user_session) {
-    res.cookie('user_session', cookieGenerator());
+    const generatedCookie = await cookieGenerator();
+    res.cookie('user_session', generatedCookie);
   }
   next();
 };
