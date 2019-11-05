@@ -21,9 +21,13 @@
   "homepage": "https://github.com/MitchellDill/layabout#readme",
   "dependencies": {
     "@material-ui/core": "^4.5.2",
+    "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
+    "konva": "^4.0.16",
+    "pg": "^7.12.1",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "react-konva": "^16.10.1-0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
