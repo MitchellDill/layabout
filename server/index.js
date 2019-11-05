@@ -2,6 +2,9 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { cookieCheck } = require('./middleware.js');
+const {
+  getMyFloorplans, insertRoom, findRoom, insertFurniture, findFurniture, insertFloorPLan,
+} = require('../database/index.js');
 
 const PORT = 3000;
 
@@ -13,46 +16,51 @@ app.use(cookieParser());
 app.use(cookieCheck);
 app.use(express.static('public'));
 
-// app.get('/users', async (req, res) => {
-//   const sessionId = req.cookie.user_session;
-//   try {
-//     roomCoordinates = await getFloorplans(month, year);
-//   } catch (e) {
-//     console.error(e);
-//   } finally {
-//     res.send({ roomCoordinates });
-//   }
-// });
-
 app.route('/users/floorplans')
   .get(async (req, res) => {
-    let myFloorPlans;
+    let myFloorplans;
     const sessionId = req.cookie.user_session;
     try {
-      // myFloorPlans = await getMyFloorplans(sessionId);
+      myFloorplans = await getMyFloorplans(sessionId);
     } catch (e) {
       console.error(e);
     } finally {
-      res.send({ myFloorPlans });
+      res.send({ myFloorplans });
     }
   })
   .post(async (req, res) => {
-    const { floorPlan, isNewRoom } = req.body;
+    let isNewRoom;
+    let hasNewFurniture;
+    const { floorplan } = req.body;
     const sessionId = req.cookie.user_session;
     try {
-      if (isNewRoom) {
-        // await insertRoom(floorplan.roomCoordinates)
-        // return roomid
-      } else {
-        // await findRoom(floorplan.roomCoordinates)
+      // findRoom
+      isNewRoom = await findRoom(sessionId, floorplan.roomCoordinates) === undefined;
+      // if undefined, isNewRoom
+      // findfurniture (loop)
+      const newFurniture = [];
+      const { furniture } = floorplan;
+      for (let i = 0; i < furniture.length; i++) {
+        const isNew = await findFurniture(furniture[i].type) === undefined;
+        if (isNew) {
+          newFurniture.push(furniture[i].type);
+        }
       }
-      res.status(201);
+      hasNewFurniture = newFurniture.length > 0;
+      // if undefined, hasNewfurniture
+      if (isNewRoom) {
+        await insertRoom(floorplan.roomCoordinates);
+      }
+      if (hasNewFurniture) {
+        for (let i = 0; i < newFurniture.length; i++) {
+          await insertFurniture(newFurniture[i]);
+        }
+      }
+      await insertFloorPLan(floorplan);
+      res.status(201).send('floorplan created!');
     } catch (e) {
       console.error(e);
-      res.status(404);
-    } finally {
-      // await insertFloorPLan(floorPlan, roomId);
-      res.send();
+      res.status(404).send('something got bungled, chief');
     }
   });
 

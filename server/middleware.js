@@ -1,8 +1,9 @@
 /* eslint-disable linebreak-style */
+const { createUserSessionRecord } = require('../database/index.js');
 
 const cookieGenerator = async () => {
   const sessionId = Math.floor(Math.random() * 500000).toString();
-  // await post userId to DB with session ID
+  await createUserSessionRecord(sessionId);
   return sessionId;
 };
 
