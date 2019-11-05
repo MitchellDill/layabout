@@ -20,13 +20,20 @@ body {
     font-size: 0.9rem;
   }
   aside {
-    position: fixed;
-    left: 60%;
-    width: 30%;
+    position: fixed;  
+    left: 70%;
+    max-width: 300px;
+    .cabinet {
+      background-color: @colorPink;
+      margin-top: 12px;
+      padding: 4px;
+      border: 1px solid @colorWhite;
+    }
   }
   footer {
     position: fixed;
     top: 90%;
+    text-align: center;
   }
   .furnitureCard {
     margin: 6px 2px;
@@ -49,5 +56,9 @@ body {
     border: 2px solid @colorLavender;
     border-radius: 7px;
     background-color: @colorWhite;
+  }
+  .header {
+    color: white;
+    background-color: @colorLavender;
   }
 }

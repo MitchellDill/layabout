@@ -2,7 +2,9 @@
 /* eslint-disable linebreak-style */
 
 import React, { Component } from 'react';
-import { Button, Card, Typography } from '@material-ui/core';
+import {
+  Button, Card, Paper, Typography,
+} from '@material-ui/core';
 import KonvaCanvas from './konvaCanvas.jsx';
 import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
@@ -13,6 +15,7 @@ import Polygon from '../model/polygonClass.js';
 import defaultFurnitureList from '../model/defaultFurnitureList.js';
 import customFurnitureList from '../model/customFurnitureList.js';
 import instructionsList from '../model/instructionsList.js';
+import style from '../style/main.less';
 
 export default class App extends Component {
   constructor(props) {
@@ -172,37 +175,39 @@ export default class App extends Component {
           />
         </div>
         <aside>
-          <FurnitureList
-            furnitureTypes={furnitureTypes}
-            selectedFurniture={selectedFurniture}
-            handleClick={this.handleClick}
-            instanceOccupancy={selectedInstanceOccupancyPercentage}
-            typeOccupancy={selectedTypeOccupancyPercentage}
-          />
-          <CreateFurniture
-            handleClick={this.handleClick}
-            selected={furnitureCreateMode}
-            cycleInstructions={this.cycleInstructions}
-          />
-          {instructionIndex > 0
-            ? (
-              <Button
-                onClick={this.saveFloorplan}
-              >
-                <Card>
-            Save Floorplan
-                </Card>
-              </Button>
-            ) : null }
-          {selectedInstanceOccupancyPercentage !== ''
-            ? (
-              <Occupancy
-                furnitureType={selectedInstanceFurnitureType}
-                instanceOccupancy={selectedInstanceOccupancyPercentage}
-                typeOccupancy={selectedTypeOccupancyPercentage}
-              />
-            )
-            : null}
+          <Paper className={style.cabinet}>
+            <FurnitureList
+              furnitureTypes={furnitureTypes}
+              selectedFurniture={selectedFurniture}
+              handleClick={this.handleClick}
+              instanceOccupancy={selectedInstanceOccupancyPercentage}
+              typeOccupancy={selectedTypeOccupancyPercentage}
+            />
+            <CreateFurniture
+              handleClick={this.handleClick}
+              selected={furnitureCreateMode}
+              cycleInstructions={this.cycleInstructions}
+            />
+            {instructionIndex > 0
+              ? (
+                <Button
+                  onClick={this.saveFloorplan}
+                >
+                  <Card className={style.cardStyle}>
+                    <Typography variant="h5">Save Floorplan</Typography>
+                  </Card>
+                </Button>
+              ) : null }
+            {selectedInstanceOccupancyPercentage !== ''
+              ? (
+                <Occupancy
+                  furnitureType={selectedInstanceFurnitureType}
+                  instanceOccupancy={selectedInstanceOccupancyPercentage}
+                  typeOccupancy={selectedTypeOccupancyPercentage}
+                />
+              )
+              : null}
+          </Paper>
         </aside>
         <footer>
           <h2>layabout a while, won't you?</h2>
