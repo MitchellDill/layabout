@@ -28,6 +28,7 @@ export default class App extends Component {
       furnitureTypes: [],
       savedLayout: [],
       savedRoom: [],
+      allFloorplans: [],
       selectedTypeOccupancyPercentage: '',
       selectedInstanceOccupancyPercentage: '',
       selectedInstanceIndex: -1,
@@ -50,12 +51,19 @@ export default class App extends Component {
     const result = getFloorplansFromDatabase();
     result.then((res) => {
       console.log(res);
+      this.storeReceivedFloorplans(res);
     });
   }
 
   getFurnitureList() {
     this.setState({
       furnitureTypes: defaultFurnitureList.concat(customFurnitureList),
+    });
+  }
+
+  storeReceivedFloorplans(receivedFloorplans) {
+    this.setState({
+      allFloorplans: receivedFloorplans,
     });
   }
 
@@ -107,6 +115,7 @@ export default class App extends Component {
     // const arrayOfRoomCoordinates = Polygon.translatePoints(savedRoom);
     const newFloorplan = { roomCoordinates: savedRoom, furniture: savedLayout };
     postFloorplanToDatabase(newFloorplan);
+    // showConfirmSave()
   }
 
   cycleInstructions(code = 1) {
@@ -149,6 +158,9 @@ export default class App extends Component {
       selectedInstanceFurnitureType,
       selectedInstanceOccupancyPercentage,
       selectedTypeOccupancyPercentage,
+      allFloorplans,
+      savedRoom,
+      savedLayout,
     } = this.state;
     return (
       <>
@@ -156,6 +168,8 @@ export default class App extends Component {
           <Instruction
             message={instructions[instructionIndex]}
             isErrorShown={isErrorShown}
+            allFloorplans={allFloorplans}
+            currentFloorplan={{ savedRoom, savedLayout }}
           />
         </header>
         <div>

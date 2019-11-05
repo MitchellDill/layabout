@@ -7,6 +7,7 @@
 body {
   text-align: center;
   background-color: @colorSand;
+  color: @colorHorse;
   h1 {
     font-size: 2.8rem;
   }
@@ -60,5 +61,13 @@ body {
   .header {
     color: white;
     background-color: @colorLavender;
+  }
+  .brownText {
+    color: @colorHorse;
+    font-size: 1.2rem;
+  }
+  .brownTextBigger {
+    .brownText();
+    font-size: 1.5rem;
   }
 }

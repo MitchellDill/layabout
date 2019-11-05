@@ -161,6 +161,7 @@ export default class KonvaCanvas extends Component {
   calculateOccupancy(furnitureInstance, furnitureCount) {
     const { updateOccupancyPercentages } = this.props;
     const { room } = this.state;
+
     const spaceOccupiedByOne = room.calculateAreaOccupiedByAnotherPolygon(furnitureInstance);
     const spaceOccupiedByAll = spaceOccupiedByOne * furnitureCount;
     updateOccupancyPercentages(spaceOccupiedByOne, spaceOccupiedByAll);
