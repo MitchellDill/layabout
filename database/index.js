@@ -17,9 +17,9 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
-const getMyFloorPLans = async (name) => {
-//   const query = 'SELECT ProductId FROM items WHERE name = $1;';
-//   const values = [name];
+const createUserSessionRecord = async (sessionId) => {
+  const query = 'INSERT INTO users (sessionId) VALUES ($1);';
+  const values = [sessionId];
 
   const client = await pool.connect();
   try {
@@ -30,4 +30,17 @@ const getMyFloorPLans = async (name) => {
   }
 };
 
-module.exports = { databaseStuff };
+const getMyFloorPLans = async (sessionId) => {
+  const query = 'SELECT * FROM rooms JOIN furniture_rooms ON (rooms.id = furniture_rooms.room_id) WHERE user_id = (SELECT id FROM users WHERE sessionId = $1);';
+  const values = [sessionId];
+
+  const client = await pool.connect();
+  try {
+    const { rows } = await client.query(query, values);
+    return rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = { createUserSessionRecord, getMyFloorPLans };

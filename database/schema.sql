@@ -16,6 +16,7 @@ CREATE TABLE users_furnitureList (
 
 CREATE TABLE rooms (
     id serial PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
     point1x INTEGER NOT NULL,
     point1y INTEGER NOT NULL,
     point2x INTEGER NOT NULL,
