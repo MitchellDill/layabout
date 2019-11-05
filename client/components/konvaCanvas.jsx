@@ -66,12 +66,13 @@ export default class KonvaCanvas extends Component {
     this.setState((prevState) => {
       const pointsArr = Polygon.translatePoints(prevState.roomCorners);
       const room = new Polygon(pointsArr);
+      updateRoom(pointsArr);
       return {
         roomExists: true,
         roomArea: room.area,
         room,
       };
-    }, updateRoom(this.state.roomCorners));
+    });
   }
 
   drawCoordinates(coordinates) {
@@ -100,7 +101,7 @@ export default class KonvaCanvas extends Component {
           };
         }, updateLayout(coordinates.x, coordinates.y, furnitureCount, true, selectedFurniture));
       } else {
-        cycleInstructions(404);
+        // cycleInstructions(404);
       }
     } else if (roomExists && selectedFurniture === '') {
       if (customShape === null) {
@@ -118,14 +119,15 @@ export default class KonvaCanvas extends Component {
 
   checkLegalityOfPoint(coordinates) {
     const { roomCorners, furniturePlaced } = this.state;
-    const { selectedFurniture } = this.props;
-    const [furnitureBeingPlaced] = furnitureList.filter((furniture) => furniture.type === selectedFurniture);
-    const furnitureIsWithinBounds = furnitureBeingPlaced.isFurnitureInPolygon(roomCorners, coordinates.x, coordinates.y);
+    // const { selectedFurniture } = this.props;
+    // const [furnitureBeingPlaced] = furnitureList.filter((furniture) => furniture.type === selectedFurniture);
+    // const furnitureIsWithinBounds = furnitureBeingPlaced.isFurnitureInPolygon(roomCorners, coordinates.x, coordinates.y);
     const pointIsWithinFurniture = furniturePlaced.length === 0 ? false : furniturePlaced.some((furniture) => {
       const [filteredFurniture] = furnitureList.filter((f) => f.type === furniture.type);
       return filteredFurniture.isPointInFurniture(coordinates, furniture.x, furniture.y);
     });
-    if (furnitureIsWithinBounds && !pointIsWithinFurniture) {
+    // deleted furnitureIsWithinBounds from conditional check below
+    if (!pointIsWithinFurniture) {
       return true;
     }
     return false;

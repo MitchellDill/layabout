@@ -19,7 +19,7 @@ app.use(express.static('public'));
 app.route('/users/floorplans')
   .get(async (req, res) => {
     let myFloorplans;
-    const sessionId = req.cookie.user_session;
+    const sessionId = req.cookies.user_session;
     try {
       myFloorplans = await getMyFloorplans(sessionId);
     } catch (e) {
@@ -29,10 +29,11 @@ app.route('/users/floorplans')
     }
   })
   .post(async (req, res) => {
+    console.log(req.body);
     let isNewRoom;
     let hasNewFurniture;
-    const { floorplan } = req.body;
-    const sessionId = req.cookie.user_session;
+    const floorplan = req.body;
+    const sessionId = req.cookies.user_session;
     try {
       // findRoom
       isNewRoom = await findRoom(sessionId, floorplan.roomCoordinates) === undefined;
@@ -42,14 +43,14 @@ app.route('/users/floorplans')
       const { furniture } = floorplan;
       for (let i = 0; i < furniture.length; i++) {
         const isNew = await findFurniture(furniture[i].type) === undefined;
-        if (isNew) {
+        if (isNew && !newFurniture.includes(furniture[i].type)) {
           newFurniture.push(furniture[i].type);
         }
       }
       hasNewFurniture = newFurniture.length > 0;
       // if undefined, hasNewfurniture
       if (isNewRoom) {
-        await insertRoom(floorplan.roomCoordinates);
+        await insertRoom(sessionId, floorplan.roomCoordinates);
       }
       if (hasNewFurniture) {
         for (let i = 0; i < newFurniture.length; i++) {
@@ -67,7 +68,7 @@ app.route('/users/floorplans')
 app.route('/users/furnitureList')
   .get(async (req, res) => {
     let myFurnitureList;
-    const sessionId = req.cookie.user_session;
+    const sessionId = req.cookies.user_session;
     try {
     // myFurnitureList = await getMyFurnitureList(sessionId);
     } catch (e) {
@@ -78,7 +79,7 @@ app.route('/users/furnitureList')
   })
   .post(async (req, res) => {
     const { newFurniture } = req.body;
-    const sessionId = req.cookie.user_session;
+    const sessionId = req.cookies.user_session;
     try {
     // await insertFurniture(newFurniture.name);
     // return furnitureId

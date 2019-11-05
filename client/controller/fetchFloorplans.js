@@ -4,32 +4,30 @@
 const rootUrl = 'http://localhost:3000/';
 
 const getFloorplansFromDatabase = async () => {
-  let result;
   try {
     const response = await fetch(`${rootUrl}users/floorplans`);
     const jsonResponse = await response.json();
-    result = jsonResponse;
+    const result = jsonResponse.myFloorplans;
+    console.log(result);
+    return result;
   } catch (e) {
     console.log('error getting: ', e);
-  } finally {
-    console.log('response: ', result);
   }
 };
 
-const postFloorplanToDatabase = async (FloorplanData) => {
-  let result;
+const postFloorplanToDatabase = async (floorplanData) => {
   try {
+    console.log(floorplanData);
     const response = await fetch(`${rootUrl}users/floorplans`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(FloorplanData),
+      body: JSON.stringify(floorplanData),
     });
-    const jsonResponse = await response.json();
-    result = jsonResponse;
+    console.log(response);
+    const jsonResponse = response.json();
+    console.log(jsonResponse);
   } catch (e) {
     console.log('error posting: ', e);
-  } finally {
-    console.log('response: ', result);
   }
 };
 

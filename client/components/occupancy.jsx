@@ -1,11 +1,12 @@
 /* eslint-disable linebreak-style */
 
 import React from 'react';
-import { Card, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 const Occupancy = ({ furnitureType, instanceOccupancy, typeOccupancy }) => {
-  const pluralFurnitureType = furnitureType[furnitureType.length - 1] === 'h' ? `${furnitureType}es` : `${furnitureType}s`;
+  const lastChar = furnitureType[furnitureType.length - 1];
+  const pluralFurnitureType = lastChar === 'h' || lastChar === 's' ? `${furnitureType}es` : `${furnitureType}s`;
   return (
     <>
       <Typography variant="body1">{`Selected ${furnitureType} takes up ${instanceOccupancy} of the room.`}</Typography>

@@ -2,11 +2,14 @@
 /* eslint-disable linebreak-style */
 
 import React, { Component } from 'react';
+import { Button, Card, Typography } from '@material-ui/core';
 import KonvaCanvas from './konvaCanvas.jsx';
 import FurnitureList from './furnitureList.jsx';
 import Instruction from './instruction.jsx';
 import Occupancy from './occupancy.jsx';
 import CreateFurniture from './createFurniture.jsx';
+import { postFloorplanToDatabase, getFloorplansFromDatabase } from '../controller/fetchFloorplans.js';
+import Polygon from '../model/polygonClass.js';
 import defaultFurnitureList from '../model/defaultFurnitureList.js';
 import customFurnitureList from '../model/customFurnitureList.js';
 import instructionsList from '../model/instructionsList.js';
@@ -15,7 +18,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 800,
+      height: 700,
       width: 700,
       instructions: instructionsList,
       instructionIndex: 0,
@@ -36,10 +39,15 @@ export default class App extends Component {
     this.updateLayout = this.updateLayout.bind(this);
     this.updateRoom = this.updateRoom.bind(this);
     this.updateOccupancyPercentages = this.updateOccupancyPercentages.bind(this);
+    this.saveFloorplan = this.saveFloorplan.bind(this);
   }
 
   componentDidMount() {
     this.getFurnitureList();
+    const result = getFloorplansFromDatabase();
+    result.then((res) => {
+      console.log(res);
+    });
   }
 
   getFurnitureList() {
@@ -87,7 +95,15 @@ export default class App extends Component {
   }
 
   updateRoom(coordinatesAsObjects) {
+    console.log(coordinatesAsObjects);
     this.setState(() => ({ savedRoom: coordinatesAsObjects }));
+  }
+
+  saveFloorplan() {
+    const { savedRoom, savedLayout } = this.state;
+    // const arrayOfRoomCoordinates = Polygon.translatePoints(savedRoom);
+    const newFloorplan = { roomCoordinates: savedRoom, furniture: savedLayout };
+    postFloorplanToDatabase(newFloorplan);
   }
 
   cycleInstructions(code = 1) {
@@ -168,6 +184,16 @@ export default class App extends Component {
             selected={furnitureCreateMode}
             cycleInstructions={this.cycleInstructions}
           />
+          {instructionIndex > 0
+            ? (
+              <Button
+                onClick={this.saveFloorplan}
+              >
+                <Card>
+            Save Floorplan
+                </Card>
+              </Button>
+            ) : null }
           {selectedInstanceOccupancyPercentage !== ''
             ? (
               <Occupancy
